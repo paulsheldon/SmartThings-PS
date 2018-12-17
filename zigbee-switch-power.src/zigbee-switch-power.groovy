@@ -20,24 +20,22 @@ metadata {
         capability "Power Meter"
         capability "Sensor"
         capability "Switch"
-        capability "Health Check"
-        capability "Light"
 
         fingerprint profileId: "0104", inClusters: "0000, 0003, 0004, 0005, 0006, 0B04"
         fingerprint profileId: "0104", inClusters: "0000, 0003, 0004, 0005, 0006, 0702"
         fingerprint profileId: "0104", inClusters: "0000, 0003, 0004, 0005, 0006, 0702, 0B05", outClusters: "0003, 000A, 0019", manufacturer: "Jasco Products", model: "45853", deviceJoinName: "GE ZigBee Plug-In Switch"
         fingerprint profileId: "0104", inClusters: "0000, 0003, 0004, 0005, 0006, 0702, 0B05", outClusters: "000A, 0019", manufacturer: "Jasco Products", model: "45856", deviceJoinName: "GE ZigBee In-Wall Switch"
-        fingerprint profileId: "0104", inClusters: "0000, 0003, 0004, 0005, 0006, 0702", outClusters: "0000", manufacturer: "ClimaxTechnology", model: "PSM_00.00.00.35TC", deviceJoinName: "Ozom Smart Plug"
-        fingerprint profileId: "0104", endpointId: "09", application:"14",inClusters: "0000, 0001, 0003, 0004, 0005, 0006, 0402, 0702, FC01", outClusters: "0019", manufacturer: "Computime", model: "SP600", deviceJoinName: "Salus SP600 Smart Plug"
+        fingerprint profileId: "0104", inClusters: "0000, 0003, 0004, 0005, 0006, 000F, 0B04", outClusters: "0019", manufacturer: "SmartThings", model: "outletv4", deviceJoinName: "Outlet"
+		fingerprint profileId: "0104", inClusters: "0000, 0001, 0003, 0004, 0005, 0006, 0402, 0702, FC01", outClusters: "0019", manufacturer: "Computime", model: "SP600", deviceJoinName: "Salus SP600 Smart Plug"
 
     }
 
     tiles(scale: 2) {
         multiAttributeTile(name:"switch", type: "lighting", width: 6, height: 4, canChangeIcon: true){
             tileAttribute ("device.switch", key: "PRIMARY_CONTROL") {
-                attributeState "on", label:'${name}', action:"switch.off", icon:"st.switches.switch.on", backgroundColor:"#00A0DC", nextState:"turningOff"
+                attributeState "on", label:'${name}', action:"switch.off", icon:"st.switches.switch.on", backgroundColor:"#79b821", nextState:"turningOff"
                 attributeState "off", label:'${name}', action:"switch.on", icon:"st.switches.switch.off", backgroundColor:"#ffffff", nextState:"turningOn"
-                attributeState "turningOn", label:'${name}', action:"switch.off", icon:"st.switches.switch.on", backgroundColor:"#00A0DC", nextState:"turningOff"
+                attributeState "turningOn", label:'${name}', action:"switch.off", icon:"st.switches.switch.on", backgroundColor:"#79b821", nextState:"turningOff"
                 attributeState "turningOff", label:'${name}', action:"switch.on", icon:"st.switches.switch.off", backgroundColor:"#ffffff", nextState:"turningOn"
             }
             tileAttribute ("power", key: "SECONDARY_CONTROL") {
@@ -55,15 +53,22 @@ metadata {
 // Parse incoming device messages to generate events
 def parse(String description) {
     log.debug "description is $description"
-    def event = zigbee.getEvent(description)
-    if (event) {
-        if (event.name == "power") {
+
+    def resultMap = zigbee.getKnownDescription(description)
+    if (resultMap) {
+        log.info resultMap
+        if (resultMap.type == "update") {
+            log.info "$device updates: ${resultMap.value}"
+        }
+        else if (resultMap.type == "power") {
             def powerValue
-            powerValue = (event.value as Integer)/10            //TODO: The divisor value needs to be set as part of configuration
-            sendEvent(name: "power", value: powerValue)
+            if (device.getDataValue("manufacturer") != "OSRAM") {       //OSRAM devices do not reliably update power
+                powerValue = (resultMap.value as Integer)/10            //TODO: The divisor value needs to be set as part of configuration
+                sendEvent(name: "power", value: powerValue)
+            }
         }
         else {
-            sendEvent(event)
+            sendEvent(name: resultMap.type, value: resultMap.value)
         }
     }
     else {
@@ -81,34 +86,10 @@ def on() {
 }
 
 def refresh() {
-    Integer reportIntervalMinutes = 5
-    def cmds = zigbee.onOffRefresh() + zigbee.simpleMeteringPowerRefresh() + zigbee.electricMeasurementPowerRefresh()
-    if (device.getDataValue("manufacturer") == "Jasco Products") {
-        // Some versions of hub firmware will incorrectly remove this binding causing manual control of switch to stop working
-        // This needs to be the first binding table entry because the device will automatically write this entry each time it restarts
-        cmds += ["zdo bind 0x${device.deviceNetworkId} 2 1 0x0006 {${device.zigbeeId}} {${device.zigbeeId}}", "delay 2000"]
-    }
-    cmds + zigbee.onOffConfig(0, reportIntervalMinutes * 60) + zigbee.simpleMeteringPowerConfig() + zigbee.electricMeasurementPowerConfig()
+    zigbee.onOffRefresh() + zigbee.simpleMeteringPowerRefresh() + zigbee.electricMeasurementPowerRefresh() + zigbee.onOffConfig() + zigbee.simpleMeteringPowerConfig() + zigbee.electricMeasurementPowerConfig()
 }
 
 def configure() {
-    log.debug "in configure()"
-    return configureHealthCheck()
-}
-
-def configureHealthCheck() {
-    Integer hcIntervalMinutes = 12
-    sendEvent(name: "checkInterval", value: hcIntervalMinutes * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
-    return refresh()
-}
-
-def updated() {
-    log.debug "in updated()"
-    // updated() doesn't have it's return value processed as hub commands, so we have to send them explicitly
-    def cmds = configureHealthCheck()
-    cmds.each{ sendHubCommand(new physicalgraph.device.HubAction(it)) }
-}
-
-def ping() {
-    return zigbee.onOffRefresh()
+    log.debug "Configuring Reporting and Bindings."
+    zigbee.onOffConfig() + zigbee.simpleMeteringPowerConfig() + zigbee.electricMeasurementPowerConfig() + zigbee.onOffRefresh() + zigbee.simpleMeteringPowerRefresh() + zigbee.electricMeasurementPowerRefresh()
 }
