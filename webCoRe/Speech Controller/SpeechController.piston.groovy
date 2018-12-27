@@ -4,21 +4,21 @@
 /**************************************************************/
 /* Author     : Paul Sheldon                                  */
 /* Created    : 22/12/2018, 00:30:13                          */
-/* Modified   : 24/12/2018, 13:33:53                          */
-/* Build      : 33                                            */
+/* Modified   : 27/12/2018, 19:40:06                          */
+/* Build      : 40                                            */
 /* UI version : v0.3.109.20181207                             */
 /**************************************************************/
- 
+
 define
 device speakerList = Office Speaker;
 device activeSpeaker; /* Office Speaker */
 integer activeLevel; /* */
-boolean forceSpeech = {$args.forceSpeech};
+boolean forceSpeech = {if($args.forceSpeech,$args.forceSpeech,false)};
 string speechEnabled = 'Speech is now Enabled';
 string speechDisabled = 'Speech is now Disabled';
-string speechText = {if($args.speechText,$args.speechText,speechEnabled)};
+string speechText = {if($args.speechText,$args.speechText,"")};
 end define;
- 
+
 execute
 if
 (
@@ -56,8 +56,6 @@ with
 {speakerList}
 do
 Speak "{speechDisabled}";
-Wait 10 seconds;
-Speak text "{speechDisabled}";
 end with;
 else
 with
