@@ -3,65 +3,54 @@
 /* Speech Controller                                          */
 /**************************************************************/
 /* Author     : Paul Sheldon                                  */
-/* Created    : 22/12/2018, 00:30:13                          */
-/* Modified   : 27/12/2018, 19:40:06                          */
-/* Build      : 40                                            */
+/* Created    : 06/01/2019, 21:26:31                          */
+/* Modified   : 07/01/2019, 10:34:00                          */
+/* Build      : 26                                            */
 /* UI version : v0.3.109.20181207                             */
 /**************************************************************/
 
 define
 device speakerList = Office Speaker;
-device activeSpeaker; /* Office Speaker */
-integer activeLevel; /* */
-boolean forceSpeech = {if($args.forceSpeech,$args.forceSpeech,false)};
-string speechEnabled = 'Speech is now Enabled';
-string speechDisabled = 'Speech is now Disabled';
-string speechText = {if($args.speechText,$args.speechText,"")};
+device speaker; /* Office Speaker */
+string speechText = {if($args.speechText,$args.speechTest,"")};
+boolean speechOverride = {if($args.speechOverride,$args.speechOverride,false)};
 end define;
 
 execute
 if
 (
-System Speak's switch is on
+System Speech Toggle's switch is on
 or
-{forceSpeech} is true
+{speechOverride} is true
 )
 and
-{text(speechText)} is not {text(null)}
+{speechText} is not {text(null)}
 then
-switch ({forceSpeech})
-case {true}:
-for each (activeSpeaker in {speakerList})
+switch ({speechOverride})
+case 'true':
+for each (speaker in {speakerList})
 do
 with
-{activeSpeaker}
+{speaker}
 do
-Set variable {activeLevel} = {activeSpeaker}'s level;
-Set level to 60%;
-Speak "{speechText}";
-Set level to {activeLevel}%;
+Speak text "{speechText}";
 end with;
 end for each;
-case {false}:
+case 'false':
 with
-{activeSpeaker}
+{speaker}
 do
-Speak "{speechText}";
+Speak text "{speechText}";
 end with;
 end switch;
-else if
-System Speak's switch changes to off
-then
-with
-{speakerList}
-do
-Speak "{speechDisabled}";
-end with;
-else
-with
-{speakerList}
-do
-Speak "{speechEnabled}";
-end with;
 end if;
+on events from
+System Speech Toggle's switch
+do
+with
+Office Speaker
+do
+Speak text "{concat("Speech is now ",if([$currentEventDevice:switch]=="on","enabled","disabled"))}";
+end with;
+end on;
 end execute;
