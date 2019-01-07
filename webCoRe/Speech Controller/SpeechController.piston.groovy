@@ -4,8 +4,8 @@
 /**************************************************************/
 /* Author     : Paul Sheldon                                  */
 /* Created    : 06/01/2019, 21:26:31                          */
-/* Modified   : 07/01/2019, 10:34:00                          */
-/* Build      : 26                                            */
+/* Modified   : 07/01/2019, 13:00:37                          */
+/* Build      : 27                                            */
 /* UI version : v0.3.109.20181207                             */
 /**************************************************************/
 
@@ -50,7 +50,7 @@ do
 with
 Office Speaker
 do
-Speak text "{concat("Speech is now ",if([$currentEventDevice:switch]=="on","enabled","disabled"))}";
+Speak text "{concat("Speech is now ",[$currentEventDevice:switch]=="on"? "enabled":"disabled")}";
 end with;
 end on;
 end execute;
