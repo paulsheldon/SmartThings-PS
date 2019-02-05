@@ -93,7 +93,7 @@ private def textHelp() {
     	"  HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n\n"+
 		"It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn"+
         " a version of @bravenel's 'Button Controller+'."+
-        " Updated to include Philips Hue Dimmers - use paulsheldon\SmartThings-PS\devicetypes\paulsheldon\hue-dimmer-switch-zha\n"+
+        " Updated to include Philips Hue Dimmers - A device driver that works with Smart Apps can be found here\n https://github.com/paulsheldon/SmartThings-PS\n"+
         " to allow dimmer to work in Smart Apps"
    	}
 	section("Some of the included changes are:"){
@@ -144,6 +144,6 @@ private def textHelp() {
     }
 	section("*** Philips Hue Dimmer:"){
             paragraph "Phillips Hue Dimmers are not natively supported by SmartThings.\n"+
-			"A device driver that works with Smart Apps can be found here https://github.com/paulsheldon/SmartThings-PS."
+			"A device driver that works with Smart Apps can be found here https://github.com/paulsheldon/SmartThings-PS"
        	}
 }
