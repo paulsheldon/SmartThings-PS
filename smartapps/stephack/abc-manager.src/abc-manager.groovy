@@ -91,7 +91,9 @@ private def textHelp() {
     	paragraph "This smartapp allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n"+
     	"  HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n\n"+
 		"It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn"+
-        " a version of @bravenel's 'Button Controller+'."
+        " a version of @bravenel's 'Button Controller+'."+
+        " Updated to include Philips Hue Dimmers - use paulsheldon\SmartThings-PS\devicetypes\paulsheldon\hue-dimmer-switch-zha\n"+
+        " to allow dimmer to work in Smart Apps"
    	}
 	section("Some of the included changes are:"){
         paragraph "A complete revamp of the configuration flow. You can now tell at a glance, what has been configured for each button."+
@@ -109,8 +111,9 @@ private def textHelp() {
         "	Dimmers - Toggle \n"+
         "	Dimmers - Set Level (Group 1) \n"+
         "	Dimmers - Set Level (Group 2) \n"+
-        "	*Dimmers - Inc Level \n"+
         "	*Dimmers - Dec Level \n"+
+        "	NEW# Color Temp - Inc Level \n"+
+        "	NEW# Color Temp - Dec Level \n"+
         "	Fans - Low, Medium, High, Off \n"+
         "	Shades - Up, Down, or Stop \n"+
         "	Locks - Unlock Only \n"+
@@ -135,7 +138,12 @@ private def textHelp() {
         "This quirk doesn't exist of course with the HS-HS100+ since it is not a dimmer."
 	}
 	section("*** Lutron Pico Requirements:"){
-        paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager"+
-    	" SmartApp are also required for this functionality!\nSearch the forums for details."
-	}
+            paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager"+
+        	" SmartApp are also required for this functionality!\nSearch the forums for details."
+    	}
+
+    section("*** Lutron Pico Requirements:"){
+            paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager"+
+         	" SmartApp are also required for this functionality!\nSearch the forums for details."
+       	}
 }
