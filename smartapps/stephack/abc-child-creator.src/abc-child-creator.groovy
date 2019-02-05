@@ -25,14 +25,14 @@ def version() { "v0.2.190127" }
 
 definition(
         name: "ABC Child Creator",
-        namespace: "paulsheldon",
-        author: "Paul Sheldon",
+        namespace: "stephack",
+        author: "Stephen Hackett",
         description: "SHOULD NOT BE PUBLISHED",
         category: "My Apps",
         parent: "stephack:ABC Manager",
-        iconUrl: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
-        iconX2Url: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
-        iconX3Url: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
+        iconUrl: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
+        iconX2Url: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
+        iconX3Url: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
 )
 
 preferences {
@@ -95,7 +95,7 @@ def getButtonSections(buttonNumber) {
         def picNameNoSpace = "${state.buttonType}${state.currentButton}.png" - " " - " " - " " - "/" - "-"
         //log.debug picNameNoSpace
         section() {    //"Hardware specific info on button selection:") {
-            if (hwSpecifics == false) paragraph image: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/${picNameNoSpace}", "${getSpecText()}"
+            if (hwSpecifics == false) paragraph image: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/${picNameNoSpace}", "${getSpecText()}"
         }
         def myDetail
         for (i in 1..19) {//Build 1st 19 Button Config Options
