@@ -21,7 +21,7 @@
  *	DO NOT PUBLISH !!!!
  */
 
-def version() { "v0.2.190127" }
+def version() { "v0.2.190205" }
 
 definition(
         name: "ABC Child Creator",
