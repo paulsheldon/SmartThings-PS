@@ -12,7 +12,7 @@
  * 1/28/18 - Added Icons and details for Remotec ZRC-90US Button Controller.
  * 2/08/18 - reformatted Button Config Preview
  * 2/12/18 - re-did getDescription() to only display Pushed/Held preview if it exists
- *			restructured detailsMap and button config build for easy editting
+ *			restructured detailsMap and button config build for easy editing
  *			made subValue inputs "hidden" and "required" when appropriate
  * 1/27/19 - Added images and code for Hue Dimmer Switches
  *         - Added options for Color Temperature
@@ -186,7 +186,7 @@ def getDescDetails(bNum, type) {
         preferenceNames.each { eachPref ->
             def prefDetail = getPrefDetails().find {
                 eachPref.key.contains(it.id)
-            }    //gets decription of action being performed(eg Turn On)
+            }    //gets description of action being performed(eg Turn On)
             def prefDevice = " : ${eachPref.value}" - "[" - "]"                                            //name of device the action is being performed on (eg Bedroom Fan)
             def prefSubValue = settings[prefDetail.sub + numType] ?: "(!Missing!)"
             if (prefDetail.type == "normal") formattedPage += "\n- ${prefDetail.desc}${prefDevice}"
@@ -229,11 +229,11 @@ def getPrefDetails() {
              [id: 'lightsDT_', sOrder: 8, desc: 'Toggle Off/Dim to ', comm: dimToggle, sub: "valDT", type: "hasSub", secLabel: "Dimmers (Toggle OnToLevel/Off)", cap: "capability.switchLevel", sTitle: "Bright Level", sDesc: "0 to 100%"],
              [id: 'colourTempUp_', sOrder: 9, desc: 'Colour Temp Up ', comm: colourTempUp, sub: "valColourU", type: "hasSub", secLabel: "Light Colour Temp (Increase Light Colour Temp By)", cap: "capability.colorTemperature", sTitle: "Increase by", sDesc: "100 to 1000"],
              [id: 'colourTempDown_', sOrder: 10, desc: 'Colour Temp Down ', comm: colourTempDown, sub: "valColourD", type: "hasSub", secLabel: "Light Colour Temp (Increase Light Colour Temp By)", cap: "capability.colorTemperature", sTitle: "Decrease by", sDesc: "100 to 1000"],
-             [id: "speakerpp_", sOrder: 11, desc: 'Toggle Play/Pause', comm: speakerplaystate, type: "normal", secLabel: "Speakers (Toggle Play/Pause)", cap: "capability.musicPlayer"],
+             [id: "speakerpp_", sOrder: 11, desc: 'Toggle Play/Pause', comm: speakerPlayState, type: "normal", secLabel: "Speakers (Toggle Play/Pause)", cap: "capability.musicPlayer"],
              [id: 'speakervu_', sOrder: 12, desc: 'Volume +', comm: levelUp, sub: "valSpeakU", type: "hasSub", secLabel: "Speakers (Increase Vol By)", cap: "capability.musicPlayer", sTitle: "Increase by", sDesc: "0 to 15"],
              [id: "speakervd_", sOrder: 13, desc: 'Volume -', comm: levelDown, sub: "valSpeakD", type: "hasSub", secLabel: "Speakers (Decrease Vol By)", cap: "capability.musicPlayer", sTitle: "Decrease by", sDesc: "0 to 15"],
-             [id: 'speakernt_', sOrder: 14, desc: 'Next Track', comm: speakernexttrack, type: "normal", secLabel: "Speakers (Go to Next Track)", cap: "capability.musicPlayer"],
-             [id: 'speakermu_', sOrder: 15, desc: 'Mute', comm: speakermute, type: "normal", secLabel: "Speakers (Toggle Mute/Unmute)", cap: "capability.musicPlayer"],
+             [id: 'speakernt_', sOrder: 14, desc: 'Next Track', comm: speakerNextTrack, type: "normal", secLabel: "Speakers (Go to Next Track)", cap: "capability.musicPlayer"],
+             [id: 'speakermu_', sOrder: 15, desc: 'Mute', comm: speakerMute, type: "normal", secLabel: "Speakers (Toggle Mute/Unmute)", cap: "capability.musicPlayer"],
              [id: 'sirens_', sOrder: 16, desc: 'Toggle', comm: toggle, type: "normal", secLabel: "Sirens (Toggle)", cap: "capability.alarm"],
              [id: "locks_", sOrder: 17, desc: 'Lock', comm: setUnlock, type: "normal", secLabel: "Locks (Lock Only)", cap: "capability.lock"],
              [id: "fanAdjust_", sOrder: 18, desc: 'Adjust', comm: adjustFan, type: "normal", secLabel: "Fans (Adjust - Low, Medium, High, Off)", cap: "capability.switchLevel"],
@@ -257,7 +257,7 @@ def buttonEvent(evt) {
             def prefDetail = getPrefDetails()?.find {
                 eachPref.key.contains(it.id)
             }        //returns the detail map of id,desc,comm,sub
-            def PrefSubValue = settings["${prefDetail.sub}${buttonNumber}_${pressType}"]    //value of subsetting (eg 100)
+            def PrefSubValue = settings["${prefDetail.sub}${buttonNumber}_${pressType}"]    //value of sub-setting (eg 100)
             if (prefDetail.sub) "$prefDetail.comm"(eachPref.value, PrefSubValue)
             else "$prefDetail.comm"(eachPref.value)
         }
@@ -301,17 +301,17 @@ def adjustShade(device) {
     }
 }
 
-def speakerplaystate(device) {
+def speakerPlayState(device) {
     log.debug "Toggling Play/Pause: $device"
     device.currentValue('status').contains('playing') ? device.pause() : device.play()
 }
 
-def speakernexttrack(device) {
+def speakerNextTrack(device) {
     log.debug "Next Track Sent to: $device"
     device.nextTrack()
 }
 
-def speakermute(device) {
+def speakerMute(device) {
     log.debug "Toggling Mute/Unmute: $device"
     device.currentValue('mute').contains('unmuted') ? device.mute() : device.unmute()
 }
@@ -329,7 +329,7 @@ def colourTempUp(device, incTemp) {
 }
 
 def colourTempDown(device, decTemp) {
-    log.debug "Decremeting Colour Temp: $device"
+    log.debug "Decrementing Colour Temp: $device"
     def currentTemp = device.currentValue('kelvin')[0]
     def newTemp = currentTemp - decTemp < 2700 ? 2700 : currentTemp - decTemp
     device.setColorTemperature(newTemp)
@@ -360,21 +360,21 @@ private getColourTempName(value) {
     return newColor
 }
 
-def levelUp(device, inclevel) {
-    log.debug "Incrementing Level (by +$inclevel: $device"
+def levelUp(device, incLevel) {
+    log.debug "Incrementing Level (by +$incLevel: $device"
     def currentVol = device.currentValue('level')[0]
-    //currentlevel return a list...[0] is first item in list ie volume level
-    def newVol = currentVol + inclevel
+    //currentLevel return a list...[0] is first item in list ie volume level
+    def newVol = currentVol + incLevel
     device.setLevel(newVol)
-    log.debug "Level increased by $inclevel to $newVol"
+    log.debug "Level increased by $incLevel to $newVol"
 }
 
-def levelDown(device, declevel) {
-    log.debug "Decrementing Level (by -declevel: $device"
+def levelDown(device, decLevel) {
+    log.debug "Decrementing Level (by -decLevel: $device"
     def currentVol = device.currentValue('level')[0]
-    def newVol = currentVol.toInteger() - declevel
+    def newVol = currentVol.toInteger() - decLevel
     device.setLevel(newVol)
-    log.debug "Level decreased by $declevel to $newVol"
+    log.debug "Level decreased by $decLevel to $newVol"
 }
 
 def setUnlock(devices) {
@@ -487,7 +487,7 @@ private timeIntervalLabel() {
 private def textHelp() {
     def text =
             section("User's Guide - Advanced Button Controller") {
-                paragraph "This smartapp allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n" +
+                paragraph "This smart app allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n" +
                         "  HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n" +
                         "Hue Dimmer switches***\n" +
                         "" +
@@ -500,7 +500,7 @@ private def textHelp() {
         paragraph "The original apps were hardcoded to allow configuring 4 or 6 button devices." +
                 " This app will automatically detect the number of buttons on your device or allow you to manually" +
                 " specify (only needed if device does not report on its own)."
-        paragraph "Allows you to give your buton device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down." +
+        paragraph "Allows you to give your button device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down." +
                 "(***Standard Pico remotes can be converted to Audio Picos)\n\nThe additional control options have been highlighted below."
     }
     section("Available Control Options are:") {
@@ -638,7 +638,7 @@ def getSpecText() {
 
 /*FOR NEW INPUTS//////////////
 1. add input to config
-2. add info to detailMappings including subvalue if needed
+2. add info to detailMappings including sub-value if needed
 3. ensure correct type is used in map..or create a new one with its own formattedPage
 
 

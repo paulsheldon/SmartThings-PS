@@ -5,8 +5,9 @@
  * 
  *
  * 6/20/17 - fixed missing subs for notifications
- * 1/07/18 - split smartApp into Parent/Child (IOS hanging on intial startup) - requires complete uninstall and reinstall of Parent and child SmartApps
+ * 1/07/18 - split smartApp into Parent/Child (IOS hanging on initial startup) - requires complete uninstall and reinstall of Parent and child SmartApps
  * 1/14/18a - updated version check code
+ * 2/5/19  - added support for Hue Dimmer & color temperature - breaking change to existing installs
  */
 
 definition(
@@ -16,9 +17,9 @@ definition(
     author: "Stephan Hackett",
     description: "Configure devices with buttons like the Aeon Labs Minimote and Lutron Pico Remotes.",
     category: "My Apps",
-    iconUrl: "https://cdn.rawgit.com/stephack/ABC/master/resources/images/abcNew.png",
-    iconX2Url: "https://cdn.rawgit.com/stephack/ABC/master/resources/images/abcNew.png",
-    iconX3Url: "https://cdn.rawgit.com/stephack/ABC/master/resources/images/abcNew.png",
+    iconUrl: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
+    iconX2Url: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
+    iconX3Url: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
 )
 
 preferences {
@@ -39,7 +40,7 @@ def mainPage() {
         }
         section("Version Info, User's Guide") {
        	href (name: "aboutPage", title: "Advanced Button Controller \n"+childVer, 
-       		description: "Tap to get Smartapp Info and User's Guide.",
+       		description: "Tap to get Smart app Info and User's Guide.",
        		image: verImgCheck(childVer), required: false, // check repo for image that matches current version. Displays update icon if missing
        		page: "aboutPage"
 		)		
@@ -50,7 +51,7 @@ def mainPage() {
 
 def verImgCheck(childVer){
 	def params = [
-    	uri: "https://cdn.rawgit.com/stephack/ABC/master/resources/images/abc_${childVer}.png",
+    	uri: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abc_${childVer}.png",
 	]
 	try {
    		httpGet(params) { resp ->
@@ -62,7 +63,7 @@ def verImgCheck(childVer){
     	}
 	} catch (e) {
     	log.error "ABC does not appear to be the latest version: Please update from IDE"
-    	return "https://cdn.rawgit.com/stephack/ABC/master/resources/images/update.png"
+    	return "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/update.png"
 	}
 }
 
@@ -88,7 +89,7 @@ def aboutPage() {
 private def textHelp() {
 	def text =
 	section("User's Guide - Advanced Button Controller") {
-    	paragraph "This smartapp allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n"+
+    	paragraph "This smart app allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n"+
     	"  HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n\n"+
 		"It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn"+
         " a version of @bravenel's 'Button Controller+'."+
@@ -101,7 +102,7 @@ private def textHelp() {
         paragraph "The original apps were hardcoded to allow configuring 4 or 6 button devices."+
         " This app will automatically detect the number of buttons on your device or allow you to manually"+
         " specify (only needed if device does not report on its own)."
-		paragraph "Allows you to give your buton device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down."+
+		paragraph "Allows you to give your button device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down."+
     	"(***Standard Pico remotes can be converted to Audio Picos)\n\nThe additional control options have been highlighted below."
 	}
 	section("Available Control Options are:"){
