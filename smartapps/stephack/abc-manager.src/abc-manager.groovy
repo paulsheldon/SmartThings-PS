@@ -141,10 +141,9 @@ private def textHelp() {
 	section("*** Lutron Pico Requirements:"){
             paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager"+
         	" SmartApp are also required for this functionality!\nSearch the forums for details."
-    	}
-
-    section("*** Lutron Pico Requirements:"){
-            paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager"+
-         	" SmartApp are also required for this functionality!\nSearch the forums for details."
+    }
+	section("*** Philips Hue Dimmer:"){
+            paragraph "Phillips Hue Dimmers are not natively supported by SmartThings.\n"+
+			"A device driver that works with Smart Apps can be found here https://github.com/paulsheldon/SmartThings-PS."
        	}
 }
