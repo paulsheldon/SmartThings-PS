@@ -1,25 +1,25 @@
 /*
  *	Advanced Button Controller (Parent/Child Version)
  *
- *	Author: Stephan Hackett
+ *	Author: Stephan Hackett / Paul Sheldon
  * 
  *
  * 6/20/17 - fixed missing subs for notifications
  * 1/07/18 - split smartApp into Parent/Child (IOS hanging on initial startup) - requires complete uninstall and reinstall of Parent and child SmartApps
  * 1/14/18a - updated version check code
- * 2/5/19  - added support for Hue Dimmer & color temperature - breaking change to existing installs
+ * 2/5/19  - added support for Hue Dimmer & color temperature
  */
 
 definition(
     name: "ABC Manager",
-    namespace: "stephack",
+    namespace: "paulsheldon",
     singleInstance: true,
-    author: "Stephan Hackett",
-    description: "Configure devices with buttons like the Aeon Labs Minimote and Lutron Pico Remotes.",
+    author: "Stephan Hackett / Paul Sheldon ",
+    description: "Configure devices with buttons like the Aeon Labs Minimote, Lutron Pico Remotes and Philips Hue Dimmer.",
     category: "My Apps",
-    iconUrl: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
-    iconX2Url: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
-    iconX3Url: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
+    iconUrl: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
+    iconX2Url: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
+    iconX3Url: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
 )
 
 preferences {
@@ -36,7 +36,7 @@ def mainPage() {
         	childVer = childApps.first().version()
         }
         section("Create a new button device mapping.") {
-            app(name: "childApps", appName: "ABC Child Creator", namespace: "stephack", title: "New Button Device Mapping", multiple: true)
+            app(name: "childApps", appName: "ABC Child Creator", namespace: "paulsheldon", title: "New Button Device Mapping", multiple: true)
         }
         section("Version Info, User's Guide") {
        	href (name: "aboutPage", title: "Advanced Button Controller \n"+childVer, 
@@ -51,7 +51,7 @@ def mainPage() {
 
 def verImgCheck(childVer){
 	def params = [
-    	uri: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abc_${childVer}.png",
+    	uri: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abc_${childVer}.png",
 	]
 	try {
    		httpGet(params) { resp ->
@@ -63,7 +63,7 @@ def verImgCheck(childVer){
     	}
 	} catch (e) {
     	log.error "ABC does not appear to be the latest version: Please update from IDE"
-    	return "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/update.png"
+    	return "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/update.png"
 	}
 }
 

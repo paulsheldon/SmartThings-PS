@@ -3,6 +3,7 @@
  *	Child Creator - Advanced Button Controller
  *
  *	Author: SmartThings, modified by Bruce Ravenel, Dale Coffing, Stephan Hackett, Paul Sheldon
+ *  Maintained by: Paul Sheldon with thanks to Stephen Hackett
  *
  *
  * 6/20/17 - fixed missing subs for notifications
@@ -25,14 +26,14 @@ def version() { "v0.2.190205" }
 
 definition(
         name: "ABC Child Creator",
-        namespace: "stephack",
-        author: "Stephen Hackett",
+        namespace: "paulsheldon",
+        author: "Stephen Hackett / Paul Sheldon",
         description: "SHOULD NOT BE PUBLISHED",
         category: "My Apps",
-        parent: "stephack:ABC Manager",
-        iconUrl: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
-        iconX2Url: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
-        iconX3Url: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/abcNew.png",
+        parent: "paulsheldon:ABC Manager",
+        iconUrl: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
+        iconX2Url: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
+        iconX3Url: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
 )
 
 preferences {
@@ -95,7 +96,7 @@ def getButtonSections(buttonNumber) {
         def picNameNoSpace = "${state.buttonType}${state.currentButton}.png" - " " - " " - " " - "/" - "-"
         //log.debug picNameNoSpace
         section() {    //"Hardware specific info on button selection:") {
-            if (hwSpecifics == false) paragraph image: "https://raw.githubusercontent.com/stephack/ABC/master/resources/images/${picNameNoSpace}", "${getSpecText()}"
+            if (hwSpecifics == false) paragraph image: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/${picNameNoSpace}", "${getSpecText()}"
         }
         def myDetail
         for (i in 1..19) {//Build 1st 19 Button Config Options
