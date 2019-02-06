@@ -17,9 +17,9 @@ definition(
     author: "Stephan Hackett / Paul Sheldon ",
     description: "Configure devices with buttons like the Aeon Labs Minimote, Lutron Pico Remotes and Philips Hue Dimmer.",
     category: "My Apps",
-    iconUrl: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
-    iconX2Url: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
-    iconX3Url: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abcNew.png",
+    iconUrl: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/abcNew.png",
+    iconX2Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/abcNew.png",
+    iconX3Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/abcNew.png",
 )
 
 preferences {
@@ -51,7 +51,7 @@ def mainPage() {
 
 def verImgCheck(childVer){
 	def params = [
-    	uri: "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/abc_${childVer}.png",
+    	uri: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/abc_${childVer}.png",
 	]
 	try {
    		httpGet(params) { resp ->
@@ -63,7 +63,7 @@ def verImgCheck(childVer){
     	}
 	} catch (e) {
     	log.error "ABC does not appear to be the latest version: Please update from IDE"
-    	return "https://raw.githubusercontent.com/paulsheldon/ABC/master/resources/images/update.png"
+    	return "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/update.png"
 	}
 }
 
