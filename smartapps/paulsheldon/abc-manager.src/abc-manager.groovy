@@ -7,7 +7,9 @@
  * 6/20/17 - fixed missing subs for notifications
  * 1/07/18 - split smartApp into Parent/Child (IOS hanging on initial startup) - requires complete uninstall and reinstall of Parent and child SmartApps
  * 1/14/18a - updated version check code
- * 2/5/19  - added support for Hue Dimmer & color temperature
+ *
+ * == Code now maintained by Paul Sheldon ==
+ * 05/02/19  - added support for Hue Dimmer & color temperature
  */
 
 definition(

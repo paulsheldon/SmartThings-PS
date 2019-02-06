@@ -15,9 +15,11 @@
  * 2/12/18 - re-did getDescription() to only display Pushed/Held preview if it exists
  *			restructured detailsMap and button config build for easy editing
  *			made subValue inputs "hidden" and "required" when appropriate
- * 1/27/19 - Added images and code for Hue Dimmer Switches
- *         - Added options for Color Temperature
- *         - Reworked some code
+ *
+ * == Code now maintained by Paul Sheldon ==
+ * 05/02/19 - Added images and code for Hue Dimmer Switches
+ *          - Added options for Color Temperature
+ *          - Reworked some code
  *
  *	DO NOT PUBLISH !!!!
  */
