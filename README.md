@@ -2,7 +2,7 @@
 
 Here you will find my created SmartApps and Device Handlers as listed below. 
 
-*Please not I acknowledge all original developers of updated Smart Apps & Device Handlers where appropriate*
+*Please note I acknowledge all original developers of updated Smart Apps & Device Handlers where appropriate*
 
 # Smart Apps
 
