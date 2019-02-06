@@ -3,7 +3,7 @@
  *	Child Creator - Advanced Button Controller
  *
  *	Author: SmartThings, modified by Bruce Ravenel, Dale Coffing, Stephan Hackett, Paul Sheldon
- *  Maintained by: Paul Sheldon with thanks to Stephen Hackett
+ *  Maintained by: Paul Sheldon with thanks to Stephan Hackett
  *
  *
  * 6/20/17 - fixed missing subs for notifications
@@ -29,7 +29,7 @@ def version() { "v0.2.190205" }
 definition(
         name: "ABC Child Creator",
         namespace: "paulsheldon",
-        author: "Stephen Hackett / Paul Sheldon",
+        author: "Stephan Hackett / Paul Sheldon",
         description: "SHOULD NOT BE PUBLISHED",
         category: "My Apps",
         parent: "paulsheldon:ABC Manager",
