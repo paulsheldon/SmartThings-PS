@@ -1,8 +1,7 @@
-This is an advanced DTH for Xiaomi Magic Cube Controller.
-It is based on code by @DroidSector and wouldn't be possible without his work.
+This is an advanced DTH for Aqara Cube Controller (MFKZQ01LM).
+It is based on code by @DroidSector & @ClassicGod and would not be possible without their work.
 
-_To pair your Xiaomi Magic Cube Controller with SmartThings HUB follow the instructions outlined here: https://community.smartthings.com/t/xiaomi-zigbee-outlet-steps-to-pair-any-xiaomi-zigbee-device/67582_
-
+_To pair your Aqara Cube Controller with SmartThings HUB follow the instructions outlined here: https://community.smartthings.com/t/xiaomi-zigbee-outlet-steps-to-pair-any-xiaomi-zigbee-device/67582_
 
 This DTH offers 3 modes of operation (that can be changed in the settings):
 

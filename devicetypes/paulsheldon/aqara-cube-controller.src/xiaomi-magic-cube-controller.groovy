@@ -3,7 +3,7 @@
  *
  *  Author: Paul Sheldon
  *
- * 	Based on code updated by: Artur "paulsheldon" Draga
+ * 	Based on code updated by: Artur "ClassicGod" Draga
  * 	Based on code by: Oleg "DroidSector" Smirnov
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -18,11 +18,12 @@
  *
  *  Release Notes
  *  =============
- *  version
+ *  Added fingerprint for Aqara Cube Controller MFKZQ01LM
+ *  Added Battery for Battery Monitor
  */
 
 metadata {
-	definition (name: "Aqara Cube Controller", namespace: "paulsheldon", author: "Artur Draga") {
+	definition (name: "Aqara Cube Controller", namespace: "paulsheldon", author: "Paul Sheldon") {
 		capability "Actuator"
 		capability "Button"
 		capability "Configuration"
