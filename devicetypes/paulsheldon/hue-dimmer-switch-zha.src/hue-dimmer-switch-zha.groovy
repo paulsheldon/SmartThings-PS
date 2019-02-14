@@ -13,6 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  */
+
 metadata {
     definition (name: "Hue Dimmer Switch (ZHA)", namespace: "digitalgecko", author: "Stephen McLaughlin") {
         capability "Configuration"
@@ -25,48 +26,39 @@ metadata {
         fingerprint profileId: "0104", endpointId: "02", application:"02", outClusters: "0019", inClusters: "0000,0001,0003,000F,FC00", manufacturer: "Philips", model: "RWL021", deviceJoinName: "Hue Dimmer Switch"
 
         attribute "lastAction", "string"
+        attribute "useButtonNames", "boolean"
     }
-
 
     simulator {
         // TODO: define status and reply messages here
     }
 
     tiles(scale: 2) {
-        // TODO: define your main and details tiles here
+
         multiAttributeTile(name:"lastAction", type: "generic", width: 6, height: 4){
             tileAttribute ("device.battery", key: "SECONDARY_CONTROL") {
-                attributeState "battery", label:'${currentValue}% battery',icon:"st.Outdoor.outdoor3", unit:"", backgroundColors:[
-                [value: 30, color: "#ff0000"],
-                [value: 40, color: "#760000"],
-                [value: 60, color: "#ff9900"],
-                [value: 80, color: "#007600"]
-                ]
+                attributeState "battery", label: '${currentValue}%',icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/develop/resources/devicetype-icons/battery050.png"
             }
             tileAttribute ("device.lastAction", key: "PRIMARY_CONTROL") {
                 attributeState "active", label:'${currentValue}', icon:"st.Home.home30"
             }
-
         }
-        //        valueTile("lastAction", "device.lastAction", width: 6, height: 2) {
-        //			state("lastAction", label:'${currentValue}')
-        //		}
 
-        valueTile("battery2", "device.battery", decoration: "flat", inactiveLabel: false, width: 5, height: 1) {
-            state("battery", label:'${currentValue}% battery', unit:"")
+        valueTile("battery", "device.battery", decoration: "flat", inactiveLabel: false, width: 5, height: 1) {
+                    state("battery", label:'${currentValue}% battery', unit:"")
         }
         standardTile("refresh", "device.refresh", inactiveLabel: false, decoration: "flat", width: 1, height: 1) {
-            state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh"
+                state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh"
         }
-        //        standardTile("configure", "device.configure", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
-        //            state "default", label:"bind", action:"configure"
-        //        }
 
+        main "lastAction"
+        details(["lastAction","battery","refresh","configure"])
     }
 
-    main "lastAction"
-    details(["lastAction","battery2","refresh","configure"])
-
+    preferences {
+        input description: "The settings below allow the button to be returned as 1,2,3,4 as required for Smart Apps or 'on','up','down','off' as per original device handler.", type: "paragraph", element: "paragraph", title: "BUTTON NAMES"
+        input "buttonNames", "bool", title:"Button Names - Use 1,2,3,4", description:"Use Button Numbers for Smart Apps"
+    }
 }
 
 // parse events into attributes
@@ -80,8 +72,6 @@ def parse(String description) {
         map = parseCatchAllMessage(description)
     }
 
-
-
     def result = map ? map : null
 
     if (description?.startsWith('enroll request')) {
@@ -91,15 +81,9 @@ def parse(String description) {
     else if (description?.startsWith('read attr -')) {
         result = parseReportAttributeMessage(description).each { createEvent(it) }
     }
-
     return result
-
-    // TODO: handle 'numberOfButtons' attribute
-
 }
-/*
-parseReportAttributeMessage
- */
+
 private List parseReportAttributeMessage(String description) {
     Map descMap = (description - "read attr - ").split(",").inject([:]) { map, param ->
         def nameAndValue = param.split(":")
@@ -188,48 +172,38 @@ private List getButtonResult(rawValue) {
     log.info "Button: " + button + "  Hue Code: " + hueStatus + "  Hold Time: " + buttonHoldTime + "  Button State: " + buttonState
     //   result.data = ['buttonNumber': button]
 
-    def buttonName
+    def buttonValue=["on","up","down", "off"]
+    sendEvent(name: "buttonNames", value: buttonNames)
+    def buttonName= (buttonNames)?   "$button" : buttonValue[button-1]
+    def buttonTitle= buttonValue[button-1]
+    log.info "Button Names: $buttonNames : $buttonName"
 
-	// Name of the button
-    if ( button == 1 ) { 
-        buttonName = "1"
-    }
-    else if ( button == 2 ) { 
-        buttonName = "2" 
-    }
-    else if ( button == 3 ) {
-        buttonName = "3" 
-    }
-    else if ( button == 4 ) { 
-        buttonName = "4" 
-    }
-
-	// The button is pressed, aka: pushed + released, with 0 hold time
+    // The button is pressed, aka: pushed + released, with 0 hold time
     if ( buttonState == 0 ) {
         result = [createEvent(name: "button", value: "pressed" , data: [buttonNumber: buttonName], descriptionText: "$device.displayName button $button was pushed", isStateChange: true)]
-        sendEvent(name: "lastAction", value: buttonName + " pressed")
-    } 
-	// The button is pressed, aka: pushed + released, with at least 1s hold time
+        sendEvent(name: "lastAction", value: buttonTitle + " pressed")
+    }
+    // The button is pressed, aka: pushed + released, with at least 1s hold time
     else if ( buttonState == 2 ) {
         result = [
         createEvent(name: "button", value: "pushed" , data: [buttonNumber: buttonName], descriptionText: "$device.displayName button $button was pushed", isStateChange: true),
         createEvent(name: "button", value: "released" , data: [buttonNumber: buttonName], descriptionText: "$device.displayName button $button was pushed", isStateChange: true)
         ]
-        sendEvent(name: "lastAction", value: buttonName + " pushed")
-        sendEvent(name: "lastAction", value: buttonName + " released")
-    } 
-	// The button is released, with at least 1s hold time. This code happens after the button is held
+        sendEvent(name: "lastAction", value: buttonTitle + " pushed")
+        sendEvent(name: "lastAction", value: buttonTitle + " released")
+    }
+    // The button is released, with at least 1s hold time. This code happens after the button is held
     else if ( buttonState == 3 ) {
         result = [
         createEvent(name: "button", value: "released", data: [buttonNumber: buttonName], descriptionText: "$device.displayName button $button was pushed", isStateChange: true)
         ]
-        sendEvent(name: "lastAction", value: buttonName + " released")
-    } 
-	// The button is held
+        sendEvent(name: "lastAction", value: buttonTitle + " released")
+    }
+    // The button is held
     else if ( buttonHoldTime == 8 ) {
         result = [createEvent(name: "button", value: "held", data: [buttonNumber: buttonName], descriptionText: "$device.displayName button $button was held", isStateChange: true)]
-        sendEvent(name: "lastAction", value: buttonName + " held")
-    } 
+        sendEvent(name: "lastAction", value: buttonTitle + " held")
+    }
     else {
         return
     }
@@ -293,7 +267,7 @@ def refresh() {
 
 def configure() {
     //	String zigbeeId = swapEndianHex(device.hub.zigbeeId)
-    //log.debug "Configiring Reporting and Bindings."
+    //log.debug "Configuring Reporting and Bindings."
     def configCmds = []
 
     // Configure Button Count
@@ -314,10 +288,7 @@ def configure() {
     //    configCmds += "st cr 0x${device.deviceNetworkId} 0x02 0x0001 0x0020 0x20 0x001E 0x001e {}"
 
     configCmds += "delay 2000"
-
     return configCmds + refresh()
-
-
 }
 
 def configureHealthCheck() {
@@ -327,7 +298,5 @@ def configureHealthCheck() {
 }
 
 def updated() {
-    // log.debug "in updated()"
-
-    configureHealthCheck()
+	configureHealthCheck()
 }
