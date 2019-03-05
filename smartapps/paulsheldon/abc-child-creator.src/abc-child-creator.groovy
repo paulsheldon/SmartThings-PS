@@ -96,7 +96,7 @@ def configButtonsPage(params) {
 def getButtonSections(buttonNumber) {
     return {
         def picNameNoSpace = "${state.buttonType}${state.currentButton}.png" - " " - " " - " " - "/" - "-"
-        //log.debug picNameNoSpace
+        log.debug picNameNoSpace
         section() {    //"Hardware specific info on button selection:") {
             if (hwSpecifics == false) paragraph image: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/${picNameNoSpace}", "${getSpecText()}"
         }
@@ -152,7 +152,7 @@ def enableSpec() {
 }
 
 def showHeld() {
-    if (state.buttonType.contains("100+ ")) return false
+    if (state.buttonType.contains("100+ ") || state.buttonType=="Cube Controller") return false
     else return true
 }
 
@@ -322,9 +322,7 @@ def speakerMute(device) {
 def colourTempUp(device, incTemp) {
     log.debug "Incrementing Colour Temp: $device"
     def currentTemp = device.currentValue('kelvin')[0]
-    log.debug "Current Colour Temp: $currentTemp"
     def newTemp = currentTemp + incTemp > 6500 ? 6500 : currentTemp + incTemp
-    log.debug "New Colour Temp: $newTemp"
     device.setColorTemperature(newTemp)
     def colorTempName = getColourTempName(newTemp)
     sendEvent(name: "colorName", value: colorTempName)
@@ -344,7 +342,6 @@ def colourTempDown(device, decTemp) {
 private getColourTempName(value) {
     def newColor = "White"
     if (value != null) {
-        log.debug "Colour Name Value:  $value"
         if (value < 3000) {
             newColor = "Warm"
         } else if (value < 4000) {
@@ -359,7 +356,6 @@ private getColourTempName(value) {
             newColor = "White"
         }
     }
-    log.debug "New Colour Name Value:  $newColor"
     return newColor
 }
 
@@ -489,25 +485,24 @@ private timeIntervalLabel() {
 
 private def textHelp() {
     def text =
-            section("User's Guide - Advanced Button Controller") {
-                paragraph "This smart app allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n" +
-                        "  HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n" +
-                        "Hue Dimmer switches***\n" +
-                        "" +
-                        "It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn" +
-                        " a version of @bravenel's 'Button Controller+'."
-            }
-    section("Some of the included changes are:") {
-        paragraph "A complete revamp of the configuration flow. You can now tell at a glance, what has been configured for each button." +
+        section("User's Guide - Advanced Button Controller") {
+            paragraph "This smart app allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n" +
+                "HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n" +
+                "Hue Dimmer switches***\n" +
+                "It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn " +
+                "a version of @bravenel's 'Button Controller+'."
+        }
+        section("Some of the included changes are:") {
+            paragraph "A complete revamp of the configuration flow. You can now tell at a glance, what has been configured for each button." +
                 "The button configuration page has been collapsed by default for easier navigation."
-        paragraph "The original apps were hardcoded to allow configuring 4 or 6 button devices." +
+            paragraph "The original apps were hardcoded to allow configuring 4 or 6 button devices." +
                 " This app will automatically detect the number of buttons on your device or allow you to manually" +
                 " specify (only needed if device does not report on its own)."
-        paragraph "Allows you to give your button device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down." +
+            paragraph "Allows you to give your button device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down." +
                 "(***Standard Pico remotes can be converted to Audio Picos)\n\nThe additional control options have been highlighted below."
-    }
-    section("Available Control Options are:") {
-        paragraph "	Switches - Toggle \n" +
+        }
+        section("Available Control Options are:") {
+            paragraph "	Switches - Toggle \n" +
                 "	Switches - Turn On \n" +
                 "	Switches - Turn Off \n" +
                 "	Dimmers - Toggle \n" +
@@ -528,29 +523,30 @@ private def textHelp() {
                 "	Sirens - Toggle \n" +
                 "	Push Notifications \n" +
                 "	SMS Notifications"
-    }
-    section("** Quirk for HS-WD100+ on Button 5 & 6:") {
-        paragraph "Because a dimmer switch already uses Press&Hold to manually set the dimming level" +
+        }
+        section("** Quirk for HS-WD100+ on Button 5 & 6:") {
+            paragraph "Because a dimmer switch already uses Press&Hold to manually set the dimming level" +
                 " please be aware of this operational behavior. If you only want to manually change" +
                 " the dim level to the lights that are wired to the switch, you will automatically" +
                 " trigger the 5/6 button event as well. And the same is true in reverse. If you" +
                 " only want to trigger a 5/6 button event action with Press&Hold, you will be manually" +
                 " changing the dim level of the switch simultaneously as well.\n" +
                 "This quirk doesn't exist of course with the HS-HS100+ since it is not a dimmer."
-    }
-    section("*** Lutron Pico Requirements:") {
-        paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager" +
+        }
+        section("*** Lutron Pico Requirements:") {
+            paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager" +
                 " SmartApp are also required for this functionality!\nSearch the forums for details."
-    }
-    section("*** Hue Dimmer Switch:") {
-        paragraph "Hue Dimmer switch will require a device type handler that reports button numbered 1-4 not on,up,down& off. use the DTH from \n" +
+        }
+        section("*** Hue Dimmer Switch:") {
+            paragraph "Hue Dimmer switch will require a device type handler that reports button numbered 1-4 not on,up,down& off. use the DTH from \n" +
                 " SmartThings-PS/SmartThings/hue-dimmer-switch-zha"
-    }
+        }
 }
 
 def getButtonType(buttonName) {
     if (buttonName.contains("Aeon Minimote")) return "Aeon Minimote"
     if (buttonName.contains("Hue Dimmer")) return "Hue Dimmer"
+    if (buttonName.contains("Cube Controller")) return "Cube Controller"
     return buttonName
 }
 
@@ -570,7 +566,17 @@ def getSpecText() {
             case 2: return "Up Button"; break
             case 3: return "Down Button"; break
             case 4: return "Off Button"; break
-            case 5: return "no Button"; break
+        }
+    }
+    if (state.buttonType == "Cube Controller") {
+        switch (state.currentButton) {
+           case 1: return "Shake Cube"; break
+           case 2: return "Flip Cube 90 Degrees"; break
+           case 3: return "Flip Cube 180 Degrees"; break
+           case 4: return "Slide Cube"; break
+           case 5: return "Knock Cube"; break
+           case 6: return "Rotate Cube Right"; break
+           case 7: return "Rotate Cube Left"; break
         }
     }
     if (state.buttonType == "Aeon Minimote") {
