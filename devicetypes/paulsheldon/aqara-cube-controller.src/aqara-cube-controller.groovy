@@ -62,57 +62,56 @@ metadata {
 	tiles (scale: 2){
 		//button tiles!
 		standardTile("face0", "device.face", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Face 0', action:"setFace0", icon: "
-			https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/def_face.png", backgroundColor: "#ffffff"
-			state "0", label:'Face 0', action:"setFace0", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/def_face.png", backgroundColor: "#00a0dc"
+			state "default", label:'Face 0', action:"setFace0", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/def_face.png", backgroundColor: "#ffffff"
+			state "0", label:'Face 0', action:"setFace0", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/def_face.png", backgroundColor: "#00a0dc"
 		}
 		standardTile("face1", "device.face", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Face 1', action:"setFace1", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/def_face.png", backgroundColor: "#ffffff"
-			state "1", label:'Face 1', action:"setFace1", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/def_face.png", backgroundColor: "#00a0dc"
+			state "default", label:'Face 1', action:"setFace1", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/def_face.png", backgroundColor: "#ffffff"
+			state "1", label:'Face 1', action:"setFace1", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/def_face.png", backgroundColor: "#00a0dc"
 		}
 		standardTile("face2", "device.face", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Face 2', action:"setFace2", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/def_face.png", backgroundColor: "#ffffff"
-			state "2", label:'Face 2', action:"setFace2", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/def_face.png", backgroundColor: "#00a0dc"
+			state "default", label:'Face 2', action:"setFace2", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/def_face.png", backgroundColor: "#ffffff"
+			state "2", label:'Face 2', action:"setFace2", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/def_face.png", backgroundColor: "#00a0dc"
 		}
 		standardTile("face3", "device.face", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Face 3', action:"setFace3", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/bat_face.png", backgroundColor: "#ffffff"
-			state "3", label:'Face 3', action:"setFace3", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/bat_face.png", backgroundColor: "#00a0dc"
+			state "default", label:'Face 3', action:"setFace3", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/bat_face.png", backgroundColor: "#ffffff"
+			state "3", label:'Face 3', action:"setFace3", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/bat_face.png", backgroundColor: "#00a0dc"
 		}
 		standardTile("face4", "device.face", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Face 4', action:"setFace4", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/def_face.png", backgroundColor: "#ffffff"
-			state "4", label:'Face 4', action:"setFace4", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/def_face.png", backgroundColor: "#00a0dc"
+			state "default", label:'Face 4', action:"setFace4", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/def_face.png", backgroundColor: "#ffffff"
+			state "4", label:'Face 4', action:"setFace4", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/def_face.png", backgroundColor: "#00a0dc"
 		}
 		standardTile("face5", "device.face", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Face 5', action:"setFace5", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/mi_face.png", backgroundColor: "#ffffff"
-			state "5", label:'Face 5', action:"setFace5", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/mi_face_s.png", backgroundColor: "#00a0dc"
+			state "default", label:'Face 5', action:"setFace5", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/mi_face.png", backgroundColor: "#ffffff"
+			state "5", label:'Face 5', action:"setFace5", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/mi_face_s.png", backgroundColor: "#00a0dc"
 		}
 		//function tiles!
 		standardTile("flip90", "device.button", decoration: "flat", width: 2, height: 2) {
-		    state "default", label: "90°", action: "flip90", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/90.png", backgroundColor: "#ffffff"
+		    state "default", label: "90°", action: "flip90", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/90.png", backgroundColor: "#ffffff"
 		}
 		standardTile("flip180", "device.button", decoration: "flat", width: 2, height: 2) {
-		    state "default", label: "180°", action: "flip180", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/180.png", backgroundColor: "#ffffff"
+		    state "default", label: "180°", action: "flip180", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/180.png", backgroundColor: "#ffffff"
 		}
 		standardTile("rotateL", "device.button", decoration: "flat", width: 2, height: 2) {
-		    state "default", label: "rotate left", action: "rotateL", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/rotate_left.png",  backgroundColor: "#ffffff"
+		    state "default", label: "rotate left", action: "rotateL", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/rotate_left.png",  backgroundColor: "#ffffff"
 		}
 		standardTile("rotateR", "device.button", decoration: "flat", width: 2, height: 2) {
-		    state "default", label: "rotate right", action: "rotateR", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/rotate_right.png",  backgroundColor: "#ffffff"
+		    state "default", label: "rotate right", action: "rotateR", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/rotate_right.png",  backgroundColor: "#ffffff"
 		}
 		standardTile("slide", "device.button", decoration: "flat", width: 2, height: 2) {
-		    state "default", label: "slide", action: "slide", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/slide.png",  backgroundColor: "#ffffff"
+		    state "default", label: "slide", action: "slide", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/slide.png",  backgroundColor: "#ffffff"
 		}
 		standardTile("knock", "device.button", decoration: "flat", width: 2, height: 2) {
-		    state "default", label: "knock", action: "knock", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/knock.png",  backgroundColor: "#ffffff"
+		    state "default", label: "knock", action: "knock", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/knock.png",  backgroundColor: "#ffffff"
 		}
 		standardTile("shake", "device.button", decoration: "flat", width: 2, height: 2) {
-		    state "default", label: "shake" , action: "shake", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/shake.png",  backgroundColor: "#ffffff"
+		    state "default", label: "shake" , action: "shake", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/shake.png",  backgroundColor: "#ffffff"
 		}
 		valueTile("battery", "device.battery", decoration: "flat", width: 4, height: 2) {
 		    state "val", label: '${currentValue}% battery', backgroundColor: "#ffffff"
 		}
 		standardTile("faceMain", "device.face", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Face: ${currentValue} ', icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/devicetypes/paulsheldon/aqara-cube-controller.src/images/cube_icon.png", backgroundColor: "#ffffff"
+			state "default", label:'Face: ${currentValue} ', icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/cube_icon.png", backgroundColor: "#ffffff"
 		}
 
 	    main(["faceMain"])

@@ -33,9 +33,9 @@ definition(
         description: "SHOULD NOT BE PUBLISHED",
         category: "My Apps",
         parent: "paulsheldon:ABC Manager",
-        iconUrl: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/abcNew.png",
-        iconX2Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/abcNew.png",
-        iconX3Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/abcNew.png",
+        iconUrl: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
+        iconX2Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
+        iconX3Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
 )
 
 preferences {
@@ -98,7 +98,7 @@ def getButtonSections(buttonNumber) {
         def picNameNoSpace = "${state.buttonType}${state.currentButton}.png" - " " - " " - " " - "/" - "-"
         log.debug picNameNoSpace
         section() {    //"Hardware specific info on button selection:") {
-            if (hwSpecifics == false) paragraph image: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc-images/${picNameNoSpace}", "${getSpecText()}"
+            if (hwSpecifics == false) paragraph image: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/${picNameNoSpace}", "${getSpecText()}"
         }
         def myDetail
         for (i in 1..19) {//Build 1st 19 Button Config Options
