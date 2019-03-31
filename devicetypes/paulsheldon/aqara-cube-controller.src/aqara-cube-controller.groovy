@@ -42,7 +42,7 @@ metadata {
 
 		command "setFace0"
 		command "setFace1"
-		command "setFace2"
+		command "setFace2", 
 		command "setFace3"
 		command "setFace4"
 		command "setFace5"
