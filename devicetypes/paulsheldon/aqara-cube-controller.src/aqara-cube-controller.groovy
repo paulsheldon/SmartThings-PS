@@ -108,7 +108,11 @@ metadata {
 		    state "default", label: "shake" , action: "shake", icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/shake.png",  backgroundColor: "#ffffff"
 		}
 		valueTile("battery", "device.battery", decoration: "flat", width: 4, height: 2) {
-		    state "val", label: '${currentValue}% battery', backgroundColor: "#ffffff"
+			state "val", label: '${currentValue}% battery',  backgroundColors:[
+					[value: 0, color: "#ff0000"],
+					[value: 20, color: "#e86d13"],
+					[value: 100, color: "#00ff00"]
+			]
 		}
 		standardTile("faceMain", "device.face", decoration: "flat", width: 2, height: 2) {
 			state "default", label:'Face: ${currentValue} ', icon: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/aqara-cube-controller/images/cube_icon.png", backgroundColor: "#ffffff"
