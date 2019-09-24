@@ -10,6 +10,8 @@
  *
  * == Code now maintained by Paul Sheldon ==
  * 05/02/19  - added support for Hue Dimmer & color temperature
+ * 09/19/19  - updated volume control, play/pause, next/previous track and mute/unmute for the
+ *             new capabilities of the Sonos speakers - code provided by Gabor Szabados.
  */
 
 definition(
@@ -34,21 +36,21 @@ def mainPage() {
         def childApps = getAllChildApps()
         def childVer = "InitialSetup"
         if(childApps.size() > 0) {
-            childVer = childApps.first().version()
-        }
-        section("Create a new button device mapping.") {
-            app(name: "childApps", appName: "ABC Child Creator", namespace: "paulsheldon", title: "New Button Device Mapping", multiple: true)
-        }
-        section("Version Info, User's Guide") {
-            href (name: "aboutPage", title: "Advanced Button Controller \n"+childVer,
-                description: "Tap to get Smart app Info and User's Guide.",
-                image: verImgCheck(childVer), required: false, // check repo for image that matches current version. Displays update icon if missing
-                page: "aboutPage"
-             )
-        }
-        remove("Uninstall ABC App","WARNING!!","This will remove the ENTIRE SmartApp, including all configs listed above.")
-    }
-}
+               childVer = childApps.first().version()
+           }
+           section("Create a new button device mapping.") {
+               app(name: "childApps", appName: "ABC Child Creator", namespace: "paulsheldon", title: "New Button Device Mapping", multiple: true)
+           }
+           section("Version Info, User's Guide") {
+               href (name: "aboutPage", title: "Advanced Button Controller \n"+childVer,
+                   description: "Tap to get Smart app Info and User's Guide.",
+                   image: verImgCheck(childVer), required: false, // check repo for image that matches current version. Displays update icon if missing
+                   page: "aboutPage"
+                )
+           }
+           remove("Uninstall ABC App","WARNING!!","This will remove the ENTIRE SmartApp, including all configs listed above.")
+       }
+   }
 
 def aboutPage() {
     dynamicPage(name: "aboutPage") {
@@ -90,6 +92,7 @@ def aboutPage() {
                 "	Locks - Unlock Only \n"+
                 "	Speaker - Play/Pause \n"+
                 "	#Speaker - Next Track \n"+
+                "	#Speaker - Previous Track \n"+
                 "	#Speaker - Mute/Unmute \n"+
                 "	#Speaker - Volume Up \n"+
                 "	#Speaker - Volume Down \n"+
@@ -117,6 +120,24 @@ def aboutPage() {
                 "A device handler that works with Smart Apps can be found on @paulsheldon\nhttps://github.com/paulsheldon/SmartThings-PS"
         }
     }
+  }
+
+def verImgCheck(childVer){
+	def params = [
+    	uri: "https://cdn.rawgit.com/stephack/ABC/master/resources/images/abc_${childVer}.png",
+	]
+	try {
+   		httpGet(params) { resp ->
+        	resp.headers.each {
+           	//log.debug "${it.name} : ${it.value}"
+        	}
+            log.debug "ABC appears to be running the latest Version"
+        	return params.uri
+    	}
+	} catch (e) {
+    	log.error "ABC does not appear to be the latest version: Please update from IDE"
+    	return "https://cdn.rawgit.com/stephack/ABC/master/resources/images/update.png"
+	}
 }
 
 def installed() {
@@ -129,22 +150,4 @@ def updated() {
 }
 
 def initialize() {
-}
-
-def verImgCheck(childVer) {
-    def params = [
-        uri: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abc_${childVer}.png",
-    ]
-    try {
-        httpGet(params) { response ->
-            response.headers.each {
-            //log.debug "${it.name} : ${it.value}"
-            }
-            log.debug "ABC appears to be running the latest Version"
-            return params.uri
-        }
-    } catch (e) {
-        log.error "ABC does not appear to be the latest version: Please update from IDE"
-        return "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/update.png"
-    }
 }

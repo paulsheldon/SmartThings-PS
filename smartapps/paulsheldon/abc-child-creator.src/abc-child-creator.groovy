@@ -2,7 +2,7 @@
  *
  *	Child Creator - Advanced Button Controller
  *
- *	Author: SmartThings, modified by Bruce Ravenel, Dale Coffing, Stephan Hackett, Paul Sheldon
+ *	Author: SmartThings, modified by Bruce Ravenel, Dale Coffing, Stephan Hackett, Paul Sheldon, Gabor Szabados
  *  Maintained by: Paul Sheldon with thanks to Stephan Hackett
  *
  *
@@ -15,6 +15,8 @@
  * 2/12/18 - re-did getDescription() to only display Pushed/Held preview if it exists
  *			restructured detailsMap and button config build for easy editing
  *			made subValue inputs "hidden" and "required" when appropriate
+ * 9/19/19 - updated volume control, play/pause, next/previous track and mute/unmute for the
+ *			new capabilities of the Sonos speakers.
  *
  * == Code now maintained by Paul Sheldon ==
  * 05/02/19 - Added images and code for Hue Dimmer Switches
@@ -23,13 +25,12 @@
  *
  *	DO NOT PUBLISH !!!!
  */
-
-def version() { "v0.2.190205" }
+def version(){"v0.2.190921"}
 
 definition(
         name: "ABC Child Creator",
         namespace: "paulsheldon",
-        author: "Stephan Hackett / Paul Sheldon",
+        author: "Stephan Hackett / Paul Sheldon / Gabor Szabados [Sonos]",
         description: "SHOULD NOT BE PUBLISHED",
         category: "My Apps",
         parent: "paulsheldon:ABC Manager",
@@ -77,6 +78,8 @@ def chooseButton() {
             input "manualCount", "number", title: "Set/Override # of Buttons?", required: false, description: "Only set if DTH does not report", submitOnChange: true
             input "collapseAll", "bool", title: "Collapse Unconfigured Sections?", defaultValue: true
             input "hwSpecifics", "bool", title: "Hide H/W Specific Details?", defaultValue: false
+            input "fanIgnoreOff", "bool", title: "Ignore Fan Off?", defaultValue: false
+            input "sonos", "bool", title: "Using a Sonos?", defaultValue: false
         }
         section(title: "Only Execute When:", hideable: true, hidden: hideOptionsSection()) {
             def timeLabel = timeIntervalLabel()
@@ -221,31 +224,42 @@ def defaultLabel() {
 }
 
 def getPrefDetails() {
+    def capPlayPause='capability.musicPlayer'
+    def capVolume='capability.musicPlayer'
+    def capTrack='capability.musicPlayer'
+    def capMute='capability.musicPlayer'
+    if (sonos==1 ){
+      capPlayPause='capability.mediaPlayback'
+      capVolume='capability.audioVolume'
+      capTrack='capability.mediaTrackControl'
+      capMute='capability.audioMute'
+    }
     def detailMappings =
-            [[id: 'lightOn_', sOrder: 1, desc: 'Turn On ', comm: turnOn, type: "normal", secLabel: "Switches (Turn On)", cap: "capability.switch"],
-             [id: "lightOff_", sOrder: 2, desc: 'Turn Off', comm: turnOff, type: "normal", secLabel: "Switches (Turn Off)", cap: "capability.switch"],
-             [id: 'lights_', sOrder: 3, desc: 'Toggle On/Off', comm: toggle, type: "normal", secLabel: "Switches (Toggle On/Off)", cap: "capability.switch"],
-             [id: "lightDim_", sOrder: 4, desc: 'Dim to ', comm: turnDim, sub: "valLight", type: "hasSub", secLabel: "Dimmers (On to Level - Group 1)", cap: "capability.switchLevel", sTitle: "Bright Level", sDesc: "0 to 100%"],
-             [id: "lightD2m_", sOrder: 5, desc: 'Dim to ', comm: turnDim, sub: "valLight2", type: "hasSub", secLabel: "Dimmers (On to Level - Group 2)", cap: "capability.switchLevel", sTitle: "Bright Level", sDesc: "0 to 100%"],
-             [id: 'dimPlus_', sOrder: 6, desc: 'Brightness +', comm: levelUp, sub: "valDimP", type: "hasSub", secLabel: "Dimmers (Increase Level By)", cap: "capability.switchLevel", sTitle: "Increase by", sDesc: "0 to 15"],
-             [id: 'dimMinus_', sOrder: 7, desc: 'Brightness -', comm: levelDown, sub: "valDimM", type: "hasSub", secLabel: "Dimmers (Decrease Level By)", cap: "capability.switchLevel", sTitle: "Decrease by", sDesc: "0 to 15"],
-             [id: 'lightsDT_', sOrder: 8, desc: 'Toggle Off/Dim to ', comm: dimToggle, sub: "valDT", type: "hasSub", secLabel: "Dimmers (Toggle OnToLevel/Off)", cap: "capability.switchLevel", sTitle: "Bright Level", sDesc: "0 to 100%"],
-             [id: 'colourTempUp_', sOrder: 9, desc: 'Colour Temp Up ', comm: colourTempUp, sub: "valColourU", type: "hasSub", secLabel: "Light Colour Temp (Increase Light Colour Temp By)", cap: "capability.colorTemperature", sTitle: "Increase by", sDesc: "100 to 1000"],
-             [id: 'colourTempDown_', sOrder: 10, desc: 'Colour Temp Down ', comm: colourTempDown, sub: "valColourD", type: "hasSub", secLabel: "Light Colour Temp (Increase Light Colour Temp By)", cap: "capability.colorTemperature", sTitle: "Decrease by", sDesc: "100 to 1000"],
-             [id: "speakerpp_", sOrder: 11, desc: 'Toggle Play/Pause', comm: speakerPlayState, type: "normal", secLabel: "Speakers (Toggle Play/Pause)", cap: "capability.musicPlayer"],
-             [id: 'speakervu_', sOrder: 12, desc: 'Volume +', comm: levelUp, sub: "valSpeakU", type: "hasSub", secLabel: "Speakers (Increase Vol By)", cap: "capability.musicPlayer", sTitle: "Increase by", sDesc: "0 to 15"],
-             [id: "speakervd_", sOrder: 13, desc: 'Volume -', comm: levelDown, sub: "valSpeakD", type: "hasSub", secLabel: "Speakers (Decrease Vol By)", cap: "capability.musicPlayer", sTitle: "Decrease by", sDesc: "0 to 15"],
-             [id: 'speakernt_', sOrder: 14, desc: 'Next Track', comm: speakerNextTrack, type: "normal", secLabel: "Speakers (Go to Next Track)", cap: "capability.musicPlayer"],
-             [id: 'speakermu_', sOrder: 15, desc: 'Mute', comm: speakerMute, type: "normal", secLabel: "Speakers (Toggle Mute/Unmute)", cap: "capability.musicPlayer"],
-             [id: 'sirens_', sOrder: 16, desc: 'Toggle', comm: toggle, type: "normal", secLabel: "Sirens (Toggle)", cap: "capability.alarm"],
-             [id: "locks_", sOrder: 17, desc: 'Lock', comm: setUnlock, type: "normal", secLabel: "Locks (Lock Only)", cap: "capability.lock"],
-             [id: "fanAdjust_", sOrder: 18, desc: 'Adjust', comm: adjustFan, type: "normal", secLabel: "Fans (Adjust - Low, Medium, High, Off)", cap: "capability.switchLevel"],
-             [id: "shadeAdjust_", sOrder: 19, desc: 'Adjust', comm: adjustShade, type: "normal", secLabel: "Shades (Adjust - Up, Down, or Stop)", cap: "capability.doorControl"],
-             [id: "mode_", desc: 'Set Mode', comm: changeMode, type: "normal"],
-             [id: "phrase_", desc: 'Run Routine', comm: runRout, type: "normal"],
-             [id: "notifications_", desc: 'Send Push Notification', comm: messageHandle, sub: "valNotify", type: "bool"],
-             [id: "phone_", desc: 'Send SMS', comm: smsHandle, sub: "notifications_", type: "normal"],
-             [id: "container_", desc: 'Cycle Playlist', comm: cyclePL, type: "normal"],
+            [[id: 'lightOn_', sOrder: 1, desc: 'Turn On ', comm: turnOn, type: 'normal', secLabel: 'Switches (Turn On)', cap: 'capability.switch'],
+             [id: 'lightOff_', sOrder: 2, desc: 'Turn Off', comm: turnOff, type: 'normal', secLabel: 'Switches (Turn Off)', cap: 'capability.switch'],
+             [id: 'lights_', sOrder: 3, desc: 'Toggle On/Off', comm: toggle, type: 'normal', secLabel: 'Switches (Toggle On/Off)', cap: 'capability.switch'],
+             [id: 'lightDim_', sOrder: 4, desc: 'Dim to ', comm: turnDim, sub: 'valLight', type: 'hasSub', secLabel: 'Dimmers (On to Level - Group 1)', cap: 'capability.switchLevel', sTitle: 'Bright Level', sDesc: '0 to 100%'],
+             [id: 'lightD2m_', sOrder: 5, desc: 'Dim to ', comm: turnDim, sub: 'valLight2', type: 'hasSub', secLabel: 'Dimmers (On to Level - Group 2)', cap: 'capability.switchLevel', sTitle: 'Bright Level', sDesc: '0 to 100%'],
+             [id: 'dimPlus_', sOrder: 6, desc: 'Brightness +', comm: levelUp, sub: 'valDimP', type: 'hasSub', secLabel: 'Dimmers (Increase Level By)', cap: 'capability.switchLevel', sTitle: 'Increase by', sDesc: '0 to 15'],
+             [id: 'dimMinus_', sOrder: 7, desc: 'Brightness -', comm: levelDown, sub: 'valDimM', type: 'hasSub', secLabel: 'Dimmers (Decrease Level By)', cap: 'capability.switchLevel', sTitle: 'Decrease by', sDesc: '0 to 15'],
+             [id: 'lightsDT_', sOrder: 8, desc: 'Toggle Off/Dim to ', comm: dimToggle, sub: 'valDT', type: 'hasSub', secLabel: 'Dimmers (Toggle OnToLevel/Off)', cap: 'capability.switchLevel', sTitle: 'Bright Level', sDesc: '0 to 100%'],
+             [id: 'colourTempUp_', sOrder: 9, desc: 'Colour Temp Up ', comm: colourTempUp, sub: 'valColourU', type: 'hasSub', secLabel: 'Light Colour Temp (Increase Light Colour Temp By)', cap: 'capability.colorTemperature', sTitle: 'Increase by', sDesc: '100 to 1000'],
+             [id: 'colourTempDown_', sOrder: 10, desc: 'Colour Temp Down ', comm: colourTempDown, sub: 'valColourD', type: 'hasSub', secLabel: 'Light Colour Temp (Increase Light Colour Temp By)', cap: 'capability.colorTemperature', sTitle: 'Decrease by', sDesc: '100 to 1000'],
+             [id: 'speakerpp_', sOrder: 11, desc: 'Toggle Play/Pause', comm: speakerPlayState, type: 'normal', secLabel: 'Speakers (Toggle Play/Pause)', cap: capPlayPause],
+             [id: 'speakervu_', sOrder: 12, desc: 'Volume +', comm: levelUp, sub: 'valSpeakU', type: 'hasSub', secLabel: 'Speakers (Increase Vol By)', cap: capVolume, sTitle: 'Increase by', sDesc: '0 to 15'],
+             [id: 'speakervd_', sOrder: 13, desc: 'Volume -', comm: levelDown, sub: 'valSpeakD', type: 'hasSub', secLabel: 'Speakers (Decrease Vol By)', cap: capVolume, sTitle: 'Decrease by', sDesc: '0 to 15'],
+             [id: 'speakernt_', sOrder: 14, desc: 'Next Track', comm: speakerNextTrack, type: 'normal', secLabel: 'Speakers (Go to Next Track)', cap: capTrack],
+             [id: 'speakerpt_', sOrder:15, desc:'Previous Track', comm: speakerPreviousTrack, type:"normal", secLabel: "Speakers (Go to Previous Track)", cap: capTrack],
+             [id: 'speakermu_', sOrder: 16, desc: 'Mute', comm: speakerMute, type: 'normal', secLabel: 'Speakers (Toggle Mute/Unmute)', cap: capMute],
+             [id: 'sirens_', sOrder: 17, desc: 'Toggle', comm: toggle, type: 'normal', secLabel: 'Sirens (Toggle)', cap: 'capability.alarm'],
+             [id: 'locks_', sOrder: 18, desc: 'Lock', comm: setUnlock, type: 'normal', secLabel: 'Locks (Lock Only)', cap: 'capability.lock'],
+             [id: 'fanAdjust_', sOrder: 19, desc: 'Adjust', comm: adjustFan, type: 'normal', secLabel: 'Fans (Adjust - Low, Medium, High, Off)', cap: 'capability.switchLevel'],
+             [id: 'shadeAdjust_', sOrder: 20, desc: 'Adjust', comm: adjustShade, type: 'normal', secLabel: 'Shades (Adjust - Up, Down, or Stop)', cap: 'capability.doorControl'],
+             [id: 'mode_', desc: 'Set Mode', comm: changeMode, type: 'normal'],
+             [id: 'phrase_', desc: 'Run Routine', comm: runRout, type: 'normal'],
+             [id: 'notifications_', desc: 'Send Push Notification', comm: messageHandle, sub: 'valNotify', type: 'bool'],
+             [id: 'phone_', desc: 'Send SMS', comm: smsHandle, sub: 'notifications_', type: 'normal'],
+             [id: 'container_', desc: 'Cycle Playlist', comm: cyclePL, type: 'normal'],
             ]
     return detailMappings
 }
@@ -282,15 +296,23 @@ def turnDim(devices, level) {
     devices.setLevel(level)
 }
 
+//
+//Fan Shade
+//
+
 def adjustFan(device) {
     log.debug "Adjusting: $device"
     def currentLevel = device.currentLevel
     if (device.currentSwitch == 'off') device.setLevel(15)
     else if (currentLevel < 34) device.setLevel(50)
     else if (currentLevel < 67) device.setLevel(90)
-    else device.off()
+     else if (fanIgnoreOff) device.off()
+        	else device.SetLevel(15)
 }
 
+//
+// Shade
+//
 def adjustShade(device) {
     log.debug "Shades: $device = ${device.currentMotor} state.lastUP = $state.lastshadesUp"
     if (device.currentMotor in ["up", "down"]) {
@@ -304,9 +326,17 @@ def adjustShade(device) {
     }
 }
 
+//
+// Speaker Functions
+//
+
 def speakerPlayState(device) {
-    log.debug "Toggling Play/Pause: $device"
-    device.currentValue('status').contains('playing') ? device.pause() : device.play()
+	log.debug "Toggling Play/Pause: $device"
+	if (sonos==1 ) {
+		device.currentValue('playbackStatus').contains('playing')? device.stop() : device.play()
+		}
+		else
+		{device.currentValue('status').contains('playing') ? device.pause() : device.play()}
 }
 
 def speakerNextTrack(device) {
@@ -314,17 +344,26 @@ def speakerNextTrack(device) {
     device.nextTrack()
 }
 
+def SpeakerPreviousTrack(device) {
+	log.debug "Previous Track Sent to: $device"
+	device.previousTrack()
+}
+
 def speakerMute(device) {
     log.debug "Toggling Mute/Unmute: $device"
     device.currentValue('mute').contains('unmuted') ? device.mute() : device.unmute()
 }
+
+//
+// Colour Functions
+//
 
 def colourTempUp(device, incTemp) {
     log.debug "Incrementing Colour Temp: $device"
     def currentTemp = device.currentValue('kelvin')[0]
     def newTemp = currentTemp + incTemp > 6500 ? 6500 : currentTemp + incTemp
     device.setColorTemperature(newTemp)
-    def colorTempName = getColourTempName(newTemp)
+    def colorTempName = colourTempName(newTemp)
     sendEvent(name: "colorName", value: colorTempName)
     log.debug "Colour Temp Changed to $colorTempName"
 }
@@ -334,12 +373,12 @@ def colourTempDown(device, decTemp) {
     def currentTemp = device.currentValue('kelvin')[0]
     def newTemp = currentTemp - decTemp < 2700 ? 2700 : currentTemp - decTemp
     device.setColorTemperature(newTemp)
-    def colorTempName = getColourTempName(newTemp)
+    def colorTempName = colourTempName(newTemp)
     sendEvent(name: "colorName", value: colorTempName)
     log.debug "Colour Temp Changed to $colorTempName"
 }
 
-private getColourTempName(value) {
+private colourTempName(value) {
     def newColor = "White"
     if (value != null) {
         if (value < 3000) {
@@ -361,19 +400,19 @@ private getColourTempName(value) {
 
 def levelUp(device, incLevel) {
     log.debug "Incrementing Level (by +$incLevel: $device"
-    def currentVol = device.currentValue('level')[0]
+    def currentLevel = device.currentValue('level')[0]
     //currentLevel return a list...[0] is first item in list ie volume level
-    def newVol = currentVol + incLevel
-    device.setLevel(newVol)
-    log.debug "Level increased by $incLevel to $newVol"
+    def newLevel = currentLevel.toInteger() + incLevel
+    device.setLevel(newLevel)
+    log.debug "Level increased by $incLevel to $newLevel"
 }
 
 def levelDown(device, decLevel) {
     log.debug "Decrementing Level (by -decLevel: $device"
-    def currentVol = device.currentValue('level')[0]
-    def newVol = currentVol.toInteger() - decLevel
-    device.setLevel(newVol)
-    log.debug "Level decreased by $decLevel to $newVol"
+    def currentLevel = device.currentValue('level')[0]
+    def newLevel = currentLevel.toInteger() - decLevel
+    device.setLevel(newLevel)
+    log.debug "Level decreased by $decLevel to $newLevel"
 }
 
 def setUnlock(devices) {
@@ -476,7 +515,7 @@ private hhmm(time, fmt = "h:mm a") {
 }
 
 private hideOptionsSection() {
-    (starting || ending || days || modes || manualCount) ? false : true
+    (starting || ending || days || modes || manualCount || fanIgnoreOff || sonos) ? false : true
 }
 
 private timeIntervalLabel() {
@@ -515,6 +554,7 @@ private def textHelp() {
                 "	Locks - Unlock Only \n" +
                 "	Speaker - Play/Pause \n" +
                 "	*Speaker - Next Track \n" +
+                "	*Speaker - Previous Track \n" +
                 "	*Speaker - Mute/Unmute \n" +
                 "	*Speaker - Volume Up \n" +
                 "	*Speaker - Volume Down \n" +
