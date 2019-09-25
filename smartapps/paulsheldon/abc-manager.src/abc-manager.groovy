@@ -10,7 +10,7 @@
  *
  * == Code now maintained by Paul Sheldon ==
  * 05/02/19  - added support for Hue Dimmer & color temperature
- * 09/19/19  - updated volume control, play/pause, next/previous track and mute/unmute for the
+ * 09/25/19  - updated volume control, play/pause, next/previous track and mute/unmute for the
  *             new capabilities of the Sonos speakers - code provided by Gabor Szabados.
  */
 
@@ -124,7 +124,7 @@ def aboutPage() {
 
 def verImgCheck(childVer){
 	def params = [
-    	uri: "https://cdn.rawgit.com/stephack/ABC/master/resources/images/abc_${childVer}.png",
+    	uri: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abc_${childVer}.png",
 	]
 	try {
    		httpGet(params) { resp ->
@@ -136,7 +136,7 @@ def verImgCheck(childVer){
     	}
 	} catch (e) {
     	log.error "ABC does not appear to be the latest version: Please update from IDE"
-    	return "https://cdn.rawgit.com/stephack/ABC/master/resources/images/update.png"
+    	return "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/update.png"
 	}
 }
 
