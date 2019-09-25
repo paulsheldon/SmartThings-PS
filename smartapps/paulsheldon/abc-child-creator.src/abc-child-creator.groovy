@@ -15,7 +15,7 @@
  * 2/12/18 - re-did getDescription() to only display Pushed/Held preview if it exists
  *			restructured detailsMap and button config build for easy editing
  *			made subValue inputs "hidden" and "required" when appropriate
- * 9/19/19 - updated volume control, play/pause, next/previous track and mute/unmute for the
+ * 9/25/19 - updated volume control, play/pause, next/previous track and mute/unmute for the
  *			new capabilities of the Sonos speakers.
  *
  * == Code now maintained by Paul Sheldon ==
@@ -25,7 +25,7 @@
  *
  *	DO NOT PUBLISH !!!!
  */
-def version(){"v0.2.190921"}
+def version(){"v0.2.190925"}
 
 definition(
         name: "ABC Child Creator",
@@ -228,7 +228,7 @@ def getPrefDetails() {
     def capVolume='capability.musicPlayer'
     def capTrack='capability.musicPlayer'
     def capMute='capability.musicPlayer'
-    if (sonos==1 ){
+    if (sonos == true ){
       capPlayPause='capability.mediaPlayback'
       capVolume='capability.audioVolume'
       capTrack='capability.mediaTrackControl'
@@ -246,8 +246,8 @@ def getPrefDetails() {
              [id: 'colourTempUp_', sOrder: 9, desc: 'Colour Temp Up ', comm: colourTempUp, sub: 'valColourU', type: 'hasSub', secLabel: 'Light Colour Temp (Increase Light Colour Temp By)', cap: 'capability.colorTemperature', sTitle: 'Increase by', sDesc: '100 to 1000'],
              [id: 'colourTempDown_', sOrder: 10, desc: 'Colour Temp Down ', comm: colourTempDown, sub: 'valColourD', type: 'hasSub', secLabel: 'Light Colour Temp (Increase Light Colour Temp By)', cap: 'capability.colorTemperature', sTitle: 'Decrease by', sDesc: '100 to 1000'],
              [id: 'speakerpp_', sOrder: 11, desc: 'Toggle Play/Pause', comm: speakerPlayState, type: 'normal', secLabel: 'Speakers (Toggle Play/Pause)', cap: capPlayPause],
-             [id: 'speakervu_', sOrder: 12, desc: 'Volume +', comm: levelUp, sub: 'valSpeakU', type: 'hasSub', secLabel: 'Speakers (Increase Vol By)', cap: capVolume, sTitle: 'Increase by', sDesc: '0 to 15'],
-             [id: 'speakervd_', sOrder: 13, desc: 'Volume -', comm: levelDown, sub: 'valSpeakD', type: 'hasSub', secLabel: 'Speakers (Decrease Vol By)', cap: capVolume, sTitle: 'Decrease by', sDesc: '0 to 15'],
+             [id: 'speakervu_', sOrder: 12, desc: 'Volume +', comm: volumeUp, sub: 'valSpeakU', type: 'hasSub', secLabel: 'Speakers (Increase Vol By)', cap: capVolume, sTitle: 'Increase by', sDesc: '0 to 15'],
+             [id: 'speakervd_', sOrder: 13, desc: 'Volume -', comm: volumeDown, sub: 'valSpeakD', type: 'hasSub', secLabel: 'Speakers (Decrease Vol By)', cap: capVolume, sTitle: 'Decrease by', sDesc: '0 to 15'],
              [id: 'speakernt_', sOrder: 14, desc: 'Next Track', comm: speakerNextTrack, type: 'normal', secLabel: 'Speakers (Go to Next Track)', cap: capTrack],
              [id: 'speakerpt_', sOrder:15, desc:'Previous Track', comm: speakerPreviousTrack, type:"normal", secLabel: "Speakers (Go to Previous Track)", cap: capTrack],
              [id: 'speakermu_', sOrder: 16, desc: 'Mute', comm: speakerMute, type: 'normal', secLabel: 'Speakers (Toggle Mute/Unmute)', cap: capMute],
@@ -332,8 +332,8 @@ def adjustShade(device) {
 
 def speakerPlayState(device) {
 	log.debug "Toggling Play/Pause: $device"
-	if (sonos==1 ) {
-		device.currentValue('playbackStatus').contains('playing')? device.stop() : device.play()
+	if (sonos == true ) {
+		device.currentValue('playbackStatus').contains('playing')? device.pause() : device.play()
 		}
 		else
 		{device.currentValue('status').contains('playing') ? device.pause() : device.play()}
@@ -344,7 +344,7 @@ def speakerNextTrack(device) {
     device.nextTrack()
 }
 
-def SpeakerPreviousTrack(device) {
+def speakerPreviousTrack(device) {
 	log.debug "Previous Track Sent to: $device"
 	device.previousTrack()
 }
@@ -352,6 +352,34 @@ def SpeakerPreviousTrack(device) {
 def speakerMute(device) {
     log.debug "Toggling Mute/Unmute: $device"
     device.currentValue('mute').contains('unmuted') ? device.mute() : device.unmute()
+}
+//
+// New Volume control
+//
+    
+def volumeUp(device, incLevel) {
+    log.debug "Incrementing Volume (by +$incLevel: $device"
+    def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0] 
+    //currentLevel return a list...[0] is first item in list ie volume level
+    def newVolume = currentVolume.toInteger() + incLevel
+    if (sonos == true ) {
+		device.setVolume(newVolume)
+		}
+		else
+		{device.setLevel(newVolume)}
+    log.debug "Volume increased by $incLevel to $newVolume"
+}
+
+def volumeDown(device, decLevel) {
+    log.debug "Decrementing Volume (by -$decLevel: $device"
+    def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0] 
+    def newVolume = currentVolume.toInteger() - decLevel
+        if (sonos == true ) {
+		device.setVolume(newVolume)
+		}
+		else
+		{device.setLevel(newVolume)}
+    log.debug "Volume decreased by $decLevel to $newVolume"
 }
 
 //
@@ -408,7 +436,7 @@ def levelUp(device, incLevel) {
 }
 
 def levelDown(device, decLevel) {
-    log.debug "Decrementing Level (by -decLevel: $device"
+    log.debug "Decrementing Level (by -$decLevel: $device"
     def currentLevel = device.currentValue('level')[0]
     def newLevel = currentLevel.toInteger() - decLevel
     device.setLevel(newLevel)
