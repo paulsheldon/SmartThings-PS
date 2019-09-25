@@ -15,16 +15,17 @@
  * 2/12/18 - re-did getDescription() to only display Pushed/Held preview if it exists
  *			restructured detailsMap and button config build for easy editing
  *			made subValue inputs "hidden" and "required" when appropriate
- * 9/25/19 - updated volume control, play/pause, next/previous track and mute/unmute for the
- *			new capabilities of the Sonos speakers.
  *
  * == Code now maintained by Paul Sheldon ==
  * 05/02/19 - Added images and code for Hue Dimmer Switches
  *          - Added options for Color Temperature
  *          - Reworked some code
+ * 09/25/19 - updated volume control, play/pause, next/previous track and mute/unmute for the
+ *			  new capabilities of the Sonos speakers, code provided by Gabor Szabados
  *
  *	DO NOT PUBLISH !!!!
  */
+
 def version(){"v0.2.190925"}
 
 definition(
@@ -57,7 +58,6 @@ def chooseButton() {
         }
         if (buttonDevice) {
             state.buttonType = getButtonType(buttonDevice.typeName)
-
             log.debug "Device Type is now set to: " + state.buttonType
             state.buttonCount = manualCount ?: buttonDevice.currentValue('numberOfButtons')
             //if(state.buttonCount==null) state.buttonCount = buttonDevice.currentValue('numButtons')	//added for kyse minimote(hopefully will be updated to correct attribute name)
@@ -113,8 +113,6 @@ def getButtonSections(buttonNumber) {
                 if (myDetail.sub && isReq("${myDetail.id}${buttonNumber}_held")) input "${myDetail.sub}${buttonNumber}_held", "number", title: myDetail.sTitle, multiple: false, required: isReq("${myDetail.id}${buttonNumber}_held"), description: myDetail.sDesc
             }
             if ([3, 8, 10, 15, 18].contains(i)) section("") {}
-
-
         }
         section("Set Mode", hideable: true, hidden: !shallHide("mode_${buttonNumber}")) {
             input "mode_${buttonNumber}_pushed", "mode", title: "When Pushed", required: false, submitOnChange: collapseAll
@@ -296,23 +294,22 @@ def turnDim(devices, level) {
     devices.setLevel(level)
 }
 
-//
-//Fan Shade
-//
-
+/*
+    Fan
+*/
 def adjustFan(device) {
     log.debug "Adjusting: $device"
     def currentLevel = device.currentLevel
     if (device.currentSwitch == 'off') device.setLevel(15)
     else if (currentLevel < 34) device.setLevel(50)
     else if (currentLevel < 67) device.setLevel(90)
-     else if (fanIgnoreOff) device.off()
-        	else device.SetLevel(15)
+    else if (fanIgnoreOff) device.off()
+    else device.SetLevel(15)
 }
 
-//
-// Shade
-//
+/*
+    Shade
+*/
 def adjustShade(device) {
     log.debug "Shades: $device = ${device.currentMotor} state.lastUP = $state.lastshadesUp"
     if (device.currentMotor in ["up", "down"]) {
@@ -326,17 +323,13 @@ def adjustShade(device) {
     }
 }
 
-//
-// Speaker Functions
-//
-
+/*
+    Speaker Functions
+*/
 def speakerPlayState(device) {
 	log.debug "Toggling Play/Pause: $device"
-	if (sonos == true ) {
-		device.currentValue('playbackStatus').contains('playing')? device.pause() : device.play()
-		}
-		else
-		{device.currentValue('status').contains('playing') ? device.pause() : device.play()}
+	if (sonos == true )	device.currentValue('playbackStatus').contains('playing')? device.pause() : device.play()
+	else device.currentValue('status').contains('playing') ? device.pause() : device.play()
 }
 
 def speakerNextTrack(device) {
@@ -353,39 +346,34 @@ def speakerMute(device) {
     log.debug "Toggling Mute/Unmute: $device"
     device.currentValue('mute').contains('unmuted') ? device.mute() : device.unmute()
 }
-//
-// New Volume control
-//
-    
+
+/*
+    Volume Control Functions
+*/
 def volumeUp(device, incLevel) {
-    log.debug "Incrementing Volume (by +$incLevel: $device"
+    log.debug "Incrementing Volume by +$incLevel: $device"
     def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0] 
     //currentLevel return a list...[0] is first item in list ie volume level
     def newVolume = currentVolume.toInteger() + incLevel
-    if (sonos == true ) {
-		device.setVolume(newVolume)
-		}
-		else
-		{device.setLevel(newVolume)}
+    if (newVolume>100) newVolume=100
+    if (sonos == true )	device.setVolume(newVolume)
+    else device.setLevel(newVolume)
     log.debug "Volume increased by $incLevel to $newVolume"
 }
 
 def volumeDown(device, decLevel) {
-    log.debug "Decrementing Volume (by -$decLevel: $device"
+    log.debug "Decrementing Volume by -$decLevel: $device"
     def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0] 
     def newVolume = currentVolume.toInteger() - decLevel
-        if (sonos == true ) {
-		device.setVolume(newVolume)
-		}
-		else
-		{device.setLevel(newVolume)}
+    if (newVolume<0) newVolume=0
+    if (sonos == true ) device.setVolume(newVolume)
+    else device.setLevel(newVolume)
     log.debug "Volume decreased by $decLevel to $newVolume"
 }
 
-//
-// Colour Functions
-//
-
+/*
+    Colour Functions
+*/
 def colourTempUp(device, incTemp) {
     log.debug "Incrementing Colour Temp: $device"
     def currentTemp = device.currentValue('kelvin')[0]
@@ -409,36 +397,30 @@ def colourTempDown(device, decTemp) {
 private colourTempName(value) {
     def newColor = "White"
     if (value != null) {
-        if (value < 3000) {
-            newColor = "Warm"
-        } else if (value < 4000) {
-            newColor = "Warm White"
-        } else if (value < 5000) {
-            newColor = "Cool White"
-        } else if (value < 6000) {
-            newColor = "Daylight"
-        } else if (value >= 6000) {
-            newColor = "Cool Daylight"
-        } else {
-            newColor = "White"
-        }
+        if (value < 3000) newColor = "Warm"
+        else if (value < 4000) newColor = "Warm White"
+        else if (value < 5000) newColor = "Cool White"
+        else if (value < 6000) newColor = "Daylight"
+        else if (value >= 6000) newColor = "Cool Daylight"
     }
     return newColor
 }
 
 def levelUp(device, incLevel) {
-    log.debug "Incrementing Level (by +$incLevel: $device"
+    log.debug "Incrementing Level by +$incLevel: $device"
     def currentLevel = device.currentValue('level')[0]
     //currentLevel return a list...[0] is first item in list ie volume level
     def newLevel = currentLevel.toInteger() + incLevel
+    if (newLevel>100) newLevel=100
     device.setLevel(newLevel)
     log.debug "Level increased by $incLevel to $newLevel"
 }
 
 def levelDown(device, decLevel) {
-    log.debug "Decrementing Level (by -$decLevel: $device"
+    log.debug "Decrementing Level by -$decLevel: $device"
     def currentLevel = device.currentValue('level')[0]
     def newLevel = currentLevel.toInteger() - decLevel
+    if (newLevel<0) newLevel=0
     device.setLevel(newLevel)
     log.debug "Level decreased by $decLevel to $newLevel"
 }
@@ -450,15 +432,10 @@ def setUnlock(devices) {
 
 def toggle(devices) {
     log.debug "Toggling: $devices"
-    if (devices*.currentValue('switch').contains('on')) {
-        devices.off()
-    } else if (devices*.currentValue('switch').contains('off')) {
-        devices.on()
-    } else if (devices*.currentValue('alarm').contains('off')) {
-        devices.siren()
-    } else {
-        devices.on()
-    }
+    if (devices*.currentValue('switch').contains('on')) devices.off()
+    else if (devices*.currentValue('switch').contains('off')) devices.on()
+    else if (devices*.currentValue('alarm').contains('off')) devices.siren()
+    else devices.on()
 }
 
 def dimToggle(devices, dimLevel) {
@@ -511,11 +488,8 @@ private getDaysOk() {
     def result = true
     if (days) {
         def df = new java.text.SimpleDateFormat("EEEE")
-        if (location.timeZone) {
-            df.setTimeZone(location.timeZone)
-        } else {
-            df.setTimeZone(TimeZone.getTimeZone("America/New_York"))
-        }
+        if (location.timeZone) df.setTimeZone(location.timeZone)
+        else df.setTimeZone(TimeZone.getTimeZone("America/New_York"))
         def day = df.format(new Date())
         result = days.contains(day)
     }
@@ -712,19 +686,15 @@ def getSpecText() {
     return "Not Specified By Device"
 }
 
-
-/*FOR NEW INPUTS//////////////
+/*
+FOR NEW INPUTS
 1. add input to config
 2. add info to detailMappings including sub-value if needed
 3. ensure correct type is used in map..or create a new one with its own formattedPage
 
-
-
-FOR NEW BUTTON DEVICE TYPES///////////////
+FOR NEW BUTTON DEVICE TYPES
 1. ensure device reports buttonNumber
 2. if not, add sendEvent to DTH as needed OR just enter manually
 3. add any special instructions to getSpecText() using dth name
 4. create pics for each button using dthName+dNumber
-
-
 */

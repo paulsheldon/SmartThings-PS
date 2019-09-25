@@ -36,19 +36,19 @@ def mainPage() {
         def childApps = getAllChildApps()
         def childVer = "InitialSetup"
         if(childApps.size() > 0) {
-               childVer = childApps.first().version()
-           }
-           section("Create a new button device mapping.") {
-               app(name: "childApps", appName: "ABC Child Creator", namespace: "paulsheldon", title: "New Button Device Mapping", multiple: true)
-           }
-           section("Version Info, User's Guide") {
-               href (name: "aboutPage", title: "Advanced Button Controller \n"+childVer,
-                   description: "Tap to get Smart app Info and User's Guide.",
-                   image: verImgCheck(childVer), required: false, // check repo for image that matches current version. Displays update icon if missing
-                   page: "aboutPage"
-                )
-           }
-           remove("Uninstall ABC App","WARNING!!","This will remove the ENTIRE SmartApp, including all configs listed above.")
+            childVer = childApps.first().version()
+        }
+        section("Create a new button device mapping.") {
+            app(name: "childApps", appName: "ABC Child Creator", namespace: "paulsheldon", title: "New Button Device Mapping", multiple: true)
+        }
+        section("Version Info, User's Guide") {
+            href (name: "aboutPage", title: "Advanced Button Controller \n"+childVer,
+               description: "Tap to get Smart app Info and User's Guide.",
+               image: verImgCheck(childVer), required: false, // check repo for image that matches current version. Displays update icon if missing
+               page: "aboutPage"
+            )
+        }
+        remove("Uninstall ABC App","WARNING!!","This will remove the ENTIRE SmartApp, including all configs listed above.")
        }
    }
 
@@ -66,7 +66,8 @@ def aboutPage() {
         section("Latest changes:") {
             paragraph "Added Sonos Device ##.\n\n"+
                 "You can now use a Sonos device as the music player."+
-                "incorporates Gabor Szabados @gszabados code."
+                "Option available in Child Advance Config."
+                "Incorporates Gabor Szabados @gszabados code."
             paragraph "Added Color Temperature ##.\n\n"+
                 "Updated to include Philips Hue Dimmers\nA device handler can be found at @paulsheldon "+
                 "https://github.com/paulsheldon/SmartThings-PS to allow dimmer to work in Smart Apps"
