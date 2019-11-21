@@ -15,7 +15,7 @@
  */
  
 metadata {
-	definition (name: "Lightify Bulb", namespace: "paulsheldon", author: "Scott Gibson / Paul Sheldon") {
+	definition (name: "Lightify Bulb", namespace: "scottgibson", author: "Scott Gibson / Paul Sheldon") {
 
 		capability "Actuator"
         capability "Configuration"

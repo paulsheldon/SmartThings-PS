@@ -15,7 +15,7 @@
  */
 
 metadata {
-    definition (name: "Hue Dimmer Switch (ZHA)", namespace: "digitalgecko", author: "Stephen McLaughlin") {
+    definition (name: "Hue Dimmer Switch ZHA", namespace: "digitalgecko", author: "Stephen McLaughlin") {
         capability "Configuration"
         capability "Battery"
         capability "Refresh"
