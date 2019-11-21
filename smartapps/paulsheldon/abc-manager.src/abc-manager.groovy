@@ -10,6 +10,8 @@
  *
  * == Code now maintained by Paul Sheldon ==
  * 05/02/19  - added support for Hue Dimmer & color temperature
+ * 09/25/19  - updated volume control, play/pause, next/previous track and mute/unmute for the
+ *             new capabilities of the Sonos speakers - code provided by Gabor Szabados.
  */
 
 definition(
@@ -17,7 +19,7 @@ definition(
     namespace: "paulsheldon",
     singleInstance: true,
     author: "Stephan Hackett / Paul Sheldon",
-    description: "Configure devices with buttons like the Aeon Labs Minimote, Lutron Pico Remotes and Philips Hue Dimmer.",
+    description: "Configure devices with buttons like the Aeon Labs Minimote, Lutron Pico Remotes and Philips Hue Dimmer. Sonos added",
     category: "My Apps",
     iconUrl: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
     iconX2Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
@@ -41,14 +43,14 @@ def mainPage() {
         }
         section("Version Info, User's Guide") {
             href (name: "aboutPage", title: "Advanced Button Controller \n"+childVer,
-                description: "Tap to get Smart app Info and User's Guide.",
-                image: verImgCheck(childVer), required: false, // check repo for image that matches current version. Displays update icon if missing
-                page: "aboutPage"
-             )
+               description: "Tap to get Smart app Info and User's Guide.",
+               image: verImgCheck(childVer), required: false, // check repo for image that matches current version. Displays update icon if missing
+               page: "aboutPage"
+            )
         }
         remove("Uninstall ABC App","WARNING!!","This will remove the ENTIRE SmartApp, including all configs listed above.")
-    }
-}
+       }
+   }
 
 def aboutPage() {
     dynamicPage(name: "aboutPage") {
@@ -62,7 +64,11 @@ def aboutPage() {
                 "It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn a version of @bravenel's 'Button Controller+'."
         }
         section("Latest changes:") {
-            paragraph "2019: Added Color Temperature ##.\n\n"+
+            paragraph "Added Sonos Device ##.\n\n"+
+                "You can now use a Sonos device as the music player."+
+                "Option available in Child Advance Config."
+                "Incorporates Gabor Szabados @gszabados code."
+            paragraph "Added Color Temperature ##.\n\n"+
                 "Updated to include Philips Hue Dimmers\nA device handler can be found at @paulsheldon "+
                 "https://github.com/paulsheldon/SmartThings-PS to allow dimmer to work in Smart Apps"
             paragraph "A complete revamp of the configuration flow. You can now tell at a glance, what has been configured for each button. "+
@@ -90,6 +96,7 @@ def aboutPage() {
                 "	Locks - Unlock Only \n"+
                 "	Speaker - Play/Pause \n"+
                 "	#Speaker - Next Track \n"+
+                "	#Speaker - Previous Track \n"+
                 "	#Speaker - Mute/Unmute \n"+
                 "	#Speaker - Volume Up \n"+
                 "	#Speaker - Volume Down \n"+
@@ -117,6 +124,24 @@ def aboutPage() {
                 "A device handler that works with Smart Apps can be found on @paulsheldon\nhttps://github.com/paulsheldon/SmartThings-PS"
         }
     }
+  }
+
+def verImgCheck(childVer){
+	def params = [
+    	uri: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abc_${childVer}.png",
+	]
+	try {
+   		httpGet(params) { resp ->
+        	resp.headers.each {
+           	//log.debug "${it.name} : ${it.value}"
+        	}
+            log.debug "ABC appears to be running the latest Version"
+        	return params.uri
+    	}
+	} catch (e) {
+    	log.error "ABC does not appear to be the latest version: Please update from IDE"
+    	return "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/update.png"
+	}
 }
 
 def installed() {
@@ -129,22 +154,4 @@ def updated() {
 }
 
 def initialize() {
-}
-
-def verImgCheck(childVer) {
-    def params = [
-        uri: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abc_${childVer}.png",
-    ]
-    try {
-        httpGet(params) { response ->
-            response.headers.each {
-            //log.debug "${it.name} : ${it.value}"
-            }
-            log.debug "ABC appears to be running the latest Version"
-            return params.uri
-        }
-    } catch (e) {
-        log.error "ABC does not appear to be the latest version: Please update from IDE"
-        return "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/update.png"
-    }
 }
