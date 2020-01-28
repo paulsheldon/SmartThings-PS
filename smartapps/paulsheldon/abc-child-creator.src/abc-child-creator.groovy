@@ -619,6 +619,7 @@ def getSpecText() {
             case 4: return "4X Tap Upper Paddle = Pushed\n4X Tap Lower Paddle = Held"; break
             case 5: return "5X Tap Upper Paddle = Pushed\n5X Tap Lower Paddle = Held"; break
             case 6: return "Hold Upper Paddle = Pushed\nHold Lower Paddle = Held"; break
+            case 7: return "1x Tap Config Button"; break;
         }
     }
     if (state.buttonType.contains("ZRC-90")) {
