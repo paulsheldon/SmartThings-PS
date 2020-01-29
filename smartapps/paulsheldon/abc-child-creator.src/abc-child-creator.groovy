@@ -22,11 +22,13 @@
  *          - Reworked some code
  * 09/25/19 - updated volume control, play/pause, next/previous track and mute/unmute for the
  *			  new capabilities of the Sonos speakers, code provided by Gabor Szabados
+ * 02/01/20  - added support (beta) for fan control
+ *             added support for Inovelli Red Series Switch & Dimmer (inc config button 7)
  *
  *	DO NOT PUBLISH !!!!
  */
 
-def version(){"v0.2.190925"}
+def version(){"v0.3.200201"}
 
 definition(
         name: "ABC Child Creator",
@@ -580,15 +582,19 @@ private def textHelp() {
                 " SmartApp are also required for this functionality!\nSearch the forums for details."
         }
         section("*** Hue Dimmer Switch:") {
-            paragraph "Hue Dimmer switch will require a device type handler that reports button numbered 1-4 not on,up,down& off. use the DTH from \n" +
-                " SmartThings-PS/SmartThings/hue-dimmer-switch-zha"
-        }
+                  paragraph "Hue Dimmer switch will require a device type handler that reports button numbered 1-4 not on,up,down& off. use the DTH from \n" +
+                      " SmartThings-PS/SmartThings/hue-dimmer-switch-zha"
+              }
+        section("*** Inovelli Red Series:") {
+                          paragraph "Added support for Inovelli Red Series including config button (7)"
+                      }
 }
 
 def getButtonType(buttonName) {
     if (buttonName.contains("Aeon Minimote")) return "Aeon Minimote"
     if (buttonName.contains("Hue Dimmer")) return "Hue Dimmer"
     if (buttonName.contains("Cube Controller")) return "Cube Controller"
+    if (buttonName.contains("Inovelli") && buttonName.contains("Red Series")) return "Inovelli Red"
     return buttonName
 }
 
@@ -654,15 +660,19 @@ def getSpecText() {
         }
     }
     if (state.buttonType.contains("Inovelli")) {
-        switch (state.currentButton) {
-            case 1: return "NOT OPERATIONAL - DO NOT USE"; break
-            case 2: return "2X Tap Upper Paddle = Pushed\n2X Tap Lower Paddle = Held"; break
-            case 3: return "3X Tap Upper Paddle = Pushed\n3X Tap Lower Paddle = Held"; break
-            case 4: return "4X Tap Upper Paddle = Pushed\n4X Tap Lower Paddle = Held"; break
-            case 5: return "5X Tap Upper Paddle = Pushed\n5X Tap Lower Paddle = Held"; break
-            case 6: return "Hold Upper Paddle = Pushed\nHold Lower Paddle = Held"; break
-        }
-    }
+           def button7 = false;
+           switch (state.currentButton) {
+               case 1: return "NOT OPERATIONAL - DO NOT USE"; break
+               case 2: return "2X Tap Upper Paddle = Pushed\n2X Tap Lower Paddle = Held"; break
+               case 3: return "3X Tap Upper Paddle = Pushed\n3X Tap Lower Paddle = Held"; break
+               case 4: return "4X Tap Upper Paddle = Pushed\n4X Tap Lower Paddle = Held"; break
+               case 5: return "5X Tap Upper Paddle = Pushed\n5X Tap Lower Paddle = Held"; break
+               case 6: return "Hold Upper Paddle = Pushed\nHold Lower Paddle = Held"; break
+               case 7: button7=true;
+           }
+           if (button7==true && state.buttonType "Inovelli Red Series")) {
+            return "1x Tap Config Button"; break;}
+       }
     if (state.buttonType.contains("ZRC-90")) {
         switch (state.currentButton) {
             case 1: return "Tap or Hold Button 1"; break
