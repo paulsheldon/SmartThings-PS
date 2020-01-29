@@ -670,8 +670,8 @@ def getSpecText() {
                case 6: return "Hold Upper Paddle = Pushed\nHold Lower Paddle = Held"; break
                case 7: button7=true;
            }
-           if (button7==true && state.buttonType "Inovelli Red Series")) {
-            return "1x Tap Config Button"; break;}
+           if (button7==true && state.buttonType.contains("Red Series")) {
+            return "1x Tap Config Button";}
        }
     if (state.buttonType.contains("ZRC-90")) {
         switch (state.currentButton) {
