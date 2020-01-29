@@ -11,7 +11,9 @@
  * == Code now maintained by Paul Sheldon ==
  * 05/02/19  - added support for Hue Dimmer & color temperature
  * 09/25/19  - updated volume control, play/pause, next/previous track and mute/unmute for the
- *             new capabilities of the Sonos speakers - code provided by Gabor Szabados.
+ *             new capabilities of the Sonos speakers - code provided by Gabor Szabados
+ * 02/01/20  - added support (beta) for fan control
+ *             added support for Inovelli Red Series Switch & Dimmer (inc config button 7)
  */
 
 definition(
@@ -19,7 +21,7 @@ definition(
     namespace: "paulsheldon",
     singleInstance: true,
     author: "Stephan Hackett / Paul Sheldon",
-    description: "Configure devices with buttons like the Aeon Labs Minimote, Lutron Pico Remotes and Philips Hue Dimmer. Sonos added",
+    description: "Configure devices with buttons like the Aeon Labs Minimote, Lutron Pico Remotes, Philips Hue Dimmer, Inovelli. Sonos added",
     category: "My Apps",
     iconUrl: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
     iconX2Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
@@ -61,13 +63,15 @@ def aboutPage() {
                 "  HomeSeer HS-WS100+ switches\n"+
                 "  Lutron Picos***\n"+
                 "  Philips Hue Dimmer Switches****\n\n"+
+                "  Inovelli Switch/Dimmer Red Series\n\n"+
                 "It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn a version of @bravenel's 'Button Controller+'."
         }
         section("Latest changes:") {
+            paragraph "Added Inovelli Red Series.\n\n"+
             paragraph "Added Sonos Device ##.\n\n"+
-                "You can now use a Sonos device as the music player."+
-                "Option available in Child Advance Config."
-                "Incorporates Gabor Szabados @gszabados code."
+                        "You can now use a Sonos device as the music player."+
+                        "Option available in Child Advance Config."
+                        "Incorporates Gabor Szabados @gszabados code."
             paragraph "Added Color Temperature ##.\n\n"+
                 "Updated to include Philips Hue Dimmers\nA device handler can be found at @paulsheldon "+
                 "https://github.com/paulsheldon/SmartThings-PS to allow dimmer to work in Smart Apps"
