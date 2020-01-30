@@ -659,20 +659,17 @@ def getSpecText() {
             case 8: return "Single Tap Lower Paddle"; break
         }
     }
-    if (state.buttonType.contains("Inovelli")) {
-           def button7 = false;
-           switch (state.currentButton) {
-               case 1: return "NOT OPERATIONAL - DO NOT USE"; break
-               case 2: return "2X Tap Upper Paddle = Pushed\n2X Tap Lower Paddle = Held"; break
-               case 3: return "3X Tap Upper Paddle = Pushed\n3X Tap Lower Paddle = Held"; break
-               case 4: return "4X Tap Upper Paddle = Pushed\n4X Tap Lower Paddle = Held"; break
-               case 5: return "5X Tap Upper Paddle = Pushed\n5X Tap Lower Paddle = Held"; break
-               case 6: return "Hold Upper Paddle = Pushed\nHold Lower Paddle = Held"; break
-               case 7: button7=true;
-           }
-           if (button7==true && state.buttonType "Inovelli Red Series")) {
-            return "1x Tap Config Button"; break;}
-       }
+    if (state.buttonType.contains("Inovelli")) {           
+        switch (state.currentButton) {
+            case 1: return "NOT OPERATIONAL - DO NOT USE"; break
+            case 2: return "2X Tap Upper Paddle = Pushed\n2X Tap Lower Paddle = Held"; break
+            case 3: return "3X Tap Upper Paddle = Pushed\n3X Tap Lower Paddle = Held"; break
+            case 4: return "4X Tap Upper Paddle = Pushed\n4X Tap Lower Paddle = Held"; break
+            case 5: return "5X Tap Upper Paddle = Pushed\n5X Tap Lower Paddle = Held"; break
+            case 6: return "Hold Upper Paddle = Pushed\nHold Lower Paddle = Held"; break
+            case 7: if (state.buttonType.contains("Red")) { return "1x Tap Config Button"; break; }
+        }
+    }
     if (state.buttonType.contains("ZRC-90")) {
         switch (state.currentButton) {
             case 1: return "Tap or Hold Button 1"; break

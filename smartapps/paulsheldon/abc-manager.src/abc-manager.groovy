@@ -44,10 +44,12 @@ def mainPage() {
             app(name: "childApps", appName: "ABC Child Creator", namespace: "paulsheldon", title: "New Button Device Mapping", multiple: true)
         }
         section("Version Info, User's Guide") {
-            href (name: "aboutPage", title: "Advanced Button Controller \n"+childVer,
-               description: "Tap to get Smart app Info and User's Guide.",
-               image: verImgCheck(childVer), required: false, // check repo for image that matches current version. Displays update icon if missing
-               page: "aboutPage"
+            href (name: "aboutPage",
+                  title: "Advanced Button Controller \n"+childVer,
+                  description: "Tap to get Smart app Info and User's Guide.",
+                  image: verImgCheck(childVer),
+                  required: false, // check repo for image that matches current version. Displays update icon if missing
+                  page: "aboutPage"
             )
         }
         remove("Uninstall ABC App","WARNING!!","This will remove the ENTIRE SmartApp, including all configs listed above.")
@@ -67,7 +69,7 @@ def aboutPage() {
                 "It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn a version of @bravenel's 'Button Controller+'."
         }
         section("Latest changes:") {
-            paragraph "Added Inovelli Red Series.\n\n"+
+            paragraph "Added Inovelli Red Series.\n\n"
             paragraph "Added Sonos Device ##.\n\n"+
                         "You can now use a Sonos device as the music player."+
                         "Option available in Child Advance Config."
@@ -131,6 +133,7 @@ def aboutPage() {
   }
 
 def verImgCheck(childVer){
+    log.debug "Looking for Version ${childVer}"
 	def params = [
     	uri: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abc_${childVer}.png",
 	]
@@ -143,7 +146,7 @@ def verImgCheck(childVer){
         	return params.uri
     	}
 	} catch (e) {
-    	log.error "ABC does not appear to be the latest version: Please update from IDE"
+    	log.error "ABC does not appear to be the latest version: Please update from IDE ${childVer}"
     	return "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/update.png"
 	}
 }

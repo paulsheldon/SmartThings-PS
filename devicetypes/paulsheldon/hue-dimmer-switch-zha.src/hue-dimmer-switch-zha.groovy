@@ -12,10 +12,11 @@
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
  *
+ * Updated to allow buttons to return 1,2,3,4 instead of on/off/up/down
  */
 
 metadata {
-    definition (name: "Hue Dimmer Switch (ZHA)", namespace: "digitalgecko", author: "Stephen McLaughlin") {
+    definition (name: "Hue Dimmer Switch ZHA", namespace: "paulsheldon", author: "Paul Sheldon") {
         capability "Configuration"
         capability "Battery"
         capability "Refresh"
