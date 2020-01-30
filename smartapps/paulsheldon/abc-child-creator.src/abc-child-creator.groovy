@@ -106,7 +106,7 @@ def getButtonSections(buttonNumber) {
             if (hwSpecifics == false) paragraph image: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/${picNameNoSpace}", "${getSpecText()}"
         }
         def myDetail
-        for (i in 1..19) {//Build 1st 19 Button Config Options
+        for (i in 1..20) {//Build 1st 20 Button Config Options
             myDetail = getPrefDetails().find { it.sOrder == i }
             section(hideable: true, hidden: !(shallHide("${myDetail.id}${buttonNumber}") || shallHide("${myDetail.sub}${buttonNumber}")), myDetail.secLabel) {
                 input "${myDetail.id}${buttonNumber}_pushed", myDetail.cap, title: "When Pushed", multiple: true, required: false, submitOnChange: collapseAll
@@ -116,19 +116,19 @@ def getButtonSections(buttonNumber) {
             }
             if ([3, 8, 10, 15, 18].contains(i)) section("") {}
         }
-        section("Set Mode", hideable: true, hidden: !shallHide("mode_${buttonNumber}")) {
+        section("Set Mode                                                           ", hideable: true, hidden: !shallHide("mode_${buttonNumber}")) {
             input "mode_${buttonNumber}_pushed", "mode", title: "When Pushed", required: false, submitOnChange: collapseAll
             if (showHeld()) input "mode_${buttonNumber}_held", "mode", title: "When Held", required: false, submitOnChange: collapseAll
         }
         def phrases = location.helloHome?.getPhrases()*.label
         if (phrases) {
-            section("Run Routine", hideable: true, hidden: !shallHide("phrase_${buttonNumber}")) {
+            section("Run Routine                                                       ", hideable: true, hidden: !shallHide("phrase_${buttonNumber}")) {
                 //log.trace phrases
                 input "phrase_${buttonNumber}_pushed", "enum", title: "When Pushed", required: false, options: phrases, submitOnChange: collapseAll
                 if (showHeld()) input "phrase_${buttonNumber}_held", "enum", title: "When Held", required: false, options: phrases, submitOnChange: collapseAll
             }
         }
-        section("Notifications:\nSMS, In App or Both", hideable: true, hidden: !shallHide("notifications_${buttonNumber}")) {
+        section("Notifications: SMS, In App or Both                ", hideable: true, hidden: !shallHide("notifications_${buttonNumber}")) {
             paragraph "****************\nWHEN PUSHED\n****************"
             input "notifications_${buttonNumber}_pushed", "text", title: "Message", description: "Enter message to send", required: false, submitOnChange: collapseAll
             input "phone_${buttonNumber}_pushed", "phone", title: "Send Text To", description: "Enter phone number", required: false, submitOnChange: collapseAll
@@ -235,26 +235,26 @@ def getPrefDetails() {
       capMute='capability.audioMute'
     }
     def detailMappings =
-            [[id: 'lightOn_', sOrder: 1, desc: 'Turn On ', comm: turnOn, type: 'normal', secLabel: 'Switches (Turn On)', cap: 'capability.switch'],
-             [id: 'lightOff_', sOrder: 2, desc: 'Turn Off', comm: turnOff, type: 'normal', secLabel: 'Switches (Turn Off)', cap: 'capability.switch'],
-             [id: 'lights_', sOrder: 3, desc: 'Toggle On/Off', comm: toggle, type: 'normal', secLabel: 'Switches (Toggle On/Off)', cap: 'capability.switch'],
-             [id: 'lightDim_', sOrder: 4, desc: 'Dim to ', comm: turnDim, sub: 'valLight', type: 'hasSub', secLabel: 'Dimmers (On to Level - Group 1)', cap: 'capability.switchLevel', sTitle: 'Bright Level', sDesc: '0 to 100%'],
-             [id: 'lightD2m_', sOrder: 5, desc: 'Dim to ', comm: turnDim, sub: 'valLight2', type: 'hasSub', secLabel: 'Dimmers (On to Level - Group 2)', cap: 'capability.switchLevel', sTitle: 'Bright Level', sDesc: '0 to 100%'],
-             [id: 'dimPlus_', sOrder: 6, desc: 'Brightness +', comm: levelUp, sub: 'valDimP', type: 'hasSub', secLabel: 'Dimmers (Increase Level By)', cap: 'capability.switchLevel', sTitle: 'Increase by', sDesc: '0 to 15'],
-             [id: 'dimMinus_', sOrder: 7, desc: 'Brightness -', comm: levelDown, sub: 'valDimM', type: 'hasSub', secLabel: 'Dimmers (Decrease Level By)', cap: 'capability.switchLevel', sTitle: 'Decrease by', sDesc: '0 to 15'],
-             [id: 'lightsDT_', sOrder: 8, desc: 'Toggle Off/Dim to ', comm: dimToggle, sub: 'valDT', type: 'hasSub', secLabel: 'Dimmers (Toggle OnToLevel/Off)', cap: 'capability.switchLevel', sTitle: 'Bright Level', sDesc: '0 to 100%'],
-             [id: 'colourTempUp_', sOrder: 9, desc: 'Colour Temp Up ', comm: colourTempUp, sub: 'valColourU', type: 'hasSub', secLabel: 'Light Colour Temp (Increase Light Colour Temp By)', cap: 'capability.colorTemperature', sTitle: 'Increase by', sDesc: '100 to 1000'],
-             [id: 'colourTempDown_', sOrder: 10, desc: 'Colour Temp Down ', comm: colourTempDown, sub: 'valColourD', type: 'hasSub', secLabel: 'Light Colour Temp (Increase Light Colour Temp By)', cap: 'capability.colorTemperature', sTitle: 'Decrease by', sDesc: '100 to 1000'],
-             [id: 'speakerpp_', sOrder: 11, desc: 'Toggle Play/Pause', comm: speakerPlayState, type: 'normal', secLabel: 'Speakers (Toggle Play/Pause)', cap: capPlayPause],
-             [id: 'speakervu_', sOrder: 12, desc: 'Volume +', comm: volumeUp, sub: 'valSpeakU', type: 'hasSub', secLabel: 'Speakers (Increase Vol By)', cap: capVolume, sTitle: 'Increase by', sDesc: '0 to 15'],
-             [id: 'speakervd_', sOrder: 13, desc: 'Volume -', comm: volumeDown, sub: 'valSpeakD', type: 'hasSub', secLabel: 'Speakers (Decrease Vol By)', cap: capVolume, sTitle: 'Decrease by', sDesc: '0 to 15'],
-             [id: 'speakernt_', sOrder: 14, desc: 'Next Track', comm: speakerNextTrack, type: 'normal', secLabel: 'Speakers (Go to Next Track)', cap: capTrack],
-             [id: 'speakerpt_', sOrder:15, desc:'Previous Track', comm: speakerPreviousTrack, type:"normal", secLabel: "Speakers (Go to Previous Track)", cap: capTrack],
-             [id: 'speakermu_', sOrder: 16, desc: 'Mute', comm: speakerMute, type: 'normal', secLabel: 'Speakers (Toggle Mute/Unmute)', cap: capMute],
-             [id: 'sirens_', sOrder: 17, desc: 'Toggle', comm: toggle, type: 'normal', secLabel: 'Sirens (Toggle)', cap: 'capability.alarm'],
-             [id: 'locks_', sOrder: 18, desc: 'Lock', comm: setUnlock, type: 'normal', secLabel: 'Locks (Lock Only)', cap: 'capability.lock'],
-             [id: 'fanAdjust_', sOrder: 19, desc: 'Adjust', comm: adjustFan, type: 'normal', secLabel: 'Fans (Adjust - Low, Medium, High, Off)', cap: 'capability.switchLevel'],
-             [id: 'shadeAdjust_', sOrder: 20, desc: 'Adjust', comm: adjustShade, type: 'normal', secLabel: 'Shades (Adjust - Up, Down, or Stop)', cap: 'capability.doorControl'],
+            [[id: 'lightOn_', sOrder: 1, desc: 'Turn On ', comm: turnOn, type: 'normal', secLabel: 'Switches (Turn On)                                           ', cap: 'capability.switch'],
+             [id: 'lightOff_', sOrder: 2, desc: 'Turn Off', comm: turnOff, type: 'normal', secLabel: 'Switches (Turn Off)                                          ', cap: 'capability.switch'],
+             [id: 'lights_', sOrder: 3, desc: 'Toggle On/Off', comm: toggle, type: 'normal', secLabel: 'Switches (Toggle On/Off)                               ', cap: 'capability.switch'],
+             [id: 'lightDim_', sOrder: 4, desc: 'Dim to ', comm: turnDim, sub: 'valLight', type: 'hasSub', secLabel: 'Dimmers (On to Level - Group 1)                    ', cap: 'capability.switchLevel', sTitle: 'Bright Level', sDesc: '0 to 100%'],
+             [id: 'lightD2m_', sOrder: 5, desc: 'Dim to ', comm: turnDim, sub: 'valLight2', type: 'hasSub', secLabel: 'Dimmers (On to Level - Group 2)                    ', cap: 'capability.switchLevel', sTitle: 'Bright Level', sDesc: '0 to 100%'],
+             [id: 'dimPlus_', sOrder: 6, desc: 'Brightness +', comm: levelUp, sub: 'valDimP', type: 'hasSub', secLabel: 'Dimmers (Increase Level By)                          ', cap: 'capability.switchLevel', sTitle: 'Increase by', sDesc: '0 to 15'],
+             [id: 'dimMinus_', sOrder: 7, desc: 'Brightness -', comm: levelDown, sub: 'valDimM', type: 'hasSub', secLabel: 'Dimmers (Decrease Level By)                        ', cap: 'capability.switchLevel', sTitle: 'Decrease by', sDesc: '0 to 15'],
+             [id: 'lightsDT_', sOrder: 8, desc: 'Toggle Off/Dim to ', comm: dimToggle, sub: 'valDT', type: 'hasSub', secLabel: 'Dimmers (Toggle OnToLevel-Off)                  ', cap: 'capability.switchLevel', sTitle: 'Bright Level', sDesc: '0 to 100%'],
+             [id: 'colourTempUp_', sOrder: 9, desc: 'Colour Temp Up ', comm: colourTempUp, sub: 'valColourU', type: 'hasSub', secLabel: 'Light Colour Temp (Increase By)                   ', cap: 'capability.colorTemperature', sTitle: 'Increase by', sDesc: '100 to 1000'],
+             [id: 'colourTempDown_', sOrder: 10, desc: 'Colour Temp Down ', comm: colourTempDown, sub: 'valColourD', type: 'hasSub', secLabel: 'Light Colour Temp (Decrease By)                  ', cap: 'capability.colorTemperature', sTitle: 'Decrease by', sDesc: '100 to 1000'],
+             [id: 'speakerpp_', sOrder: 11, desc: 'Toggle Play/Pause', comm: speakerPlayState, type: 'normal', secLabel: 'Speakers (Toggle Play-Pause)                       ', cap: capPlayPause],
+             [id: 'speakervu_', sOrder: 12, desc: 'Volume +', comm: volumeUp, sub: 'valSpeakU', type: 'hasSub', secLabel: 'Speakers (Increase Vol By)                             ', cap: capVolume, sTitle: 'Increase by', sDesc: '0 to 15'],
+             [id: 'speakervd_', sOrder: 13, desc: 'Volume -', comm: volumeDown, sub: 'valSpeakD', type: 'hasSub', secLabel: 'Speakers (Decrease Vol By)                           ', cap: capVolume, sTitle: 'Decrease by', sDesc: '0 to 15'],
+             [id: 'speakernt_', sOrder: 14, desc: 'Next Track', comm: speakerNextTrack, type: 'normal', secLabel: 'Speakers (Go to Next Track)                           ', cap: capTrack],
+             [id: 'speakerpt_', sOrder:15, desc:'Previous Track', comm: speakerPreviousTrack, type:"normal", secLabel: 'Speakers (Go to Previous Track)                    ', cap: capTrack],
+             [id: 'speakermu_', sOrder: 16, desc: 'Mute', comm: speakerMute, type: 'normal', secLabel: 'Speakers (Toggle Mute-Unmute)                  ', cap: capMute],
+             [id: 'sirens_', sOrder: 17, desc: 'Toggle', comm: toggle, type: 'normal', secLabel: 'Sirens (Toggle)                                                 ', cap: 'capability.alarm'],
+             [id: 'locks_', sOrder: 18, desc: 'Lock', comm: setUnlock, type: 'normal', secLabel: 'Locks (Lock Only)                                             ', cap: 'capability.lock'],
+             [id: 'fanAdjust_', sOrder: 19, desc: 'Adjust', comm: adjustFan, type: 'normal', secLabel: 'Fans (Adjust - Low, Medium, High, Off)         ', cap: 'capability.switchLevel'],
+             [id: 'shadeAdjust_', sOrder: 20, desc: 'Adjust', comm: adjustShade, type: 'normal', secLabel: 'Shades (Adjust - Up, Down, or Stop)              ', cap: 'capability.doorControl'],
              [id: 'mode_', desc: 'Set Mode', comm: changeMode, type: 'normal'],
              [id: 'phrase_', desc: 'Run Routine', comm: runRout, type: 'normal'],
              [id: 'notifications_', desc: 'Send Push Notification', comm: messageHandle, sub: 'valNotify', type: 'bool'],
