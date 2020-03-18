@@ -378,7 +378,7 @@ def volumeDown(device, decLevel) {
 */
 def colourTempUp(device, incTemp) {
     log.debug "Incrementing Colour Temp: $device"
-    def currentTemp = device.currentValue('kelvin')[0]
+    def currentTemp = device.currentValue('colorTemperature')[0]
     def newTemp = currentTemp + incTemp > 6500 ? 6500 : currentTemp + incTemp
     device.setColorTemperature(newTemp)
     def colorTempName = colourTempName(newTemp)
@@ -388,8 +388,8 @@ def colourTempUp(device, incTemp) {
 
 def colourTempDown(device, decTemp) {
     log.debug "Decrementing Colour Temp: $device"
-    def currentTemp = device.currentValue('kelvin')[0]
-    def newTemp = currentTemp - decTemp < 2700 ? 2700 : currentTemp - decTemp
+    def currentTemp = device.currentValue('colorTemperature')[0]
+    def newTemp = currentTemp - decTemp < 2200 ? 2200 : currentTemp - decTemp
     device.setColorTemperature(newTemp)
     def colorTempName = colourTempName(newTemp)
     sendEvent(name: "colorName", value: colorTempName)
