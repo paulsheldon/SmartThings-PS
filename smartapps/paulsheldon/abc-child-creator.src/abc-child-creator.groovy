@@ -690,6 +690,15 @@ def getSpecText() {
             case 16: return "2X Tap Button 8\nHold Not Available"; break
         }
     }
+    if (state.buttonType == "Ikea Button") {
+        switch (state.currentButton) {
+            case 1: return "Up Button"; break
+            case 2: return "Right Button"; break
+            case 3: return "Down Button"; break
+            case 4: return "Left Button"; break
+            case 5: return "Middle Button"; break
+        }
+    }
     return "Not Specified By Device"
 }
 
