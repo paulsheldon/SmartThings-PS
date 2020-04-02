@@ -422,7 +422,7 @@ def levelDown(device, decLevel) {
     log.debug "Decrementing Level by -$decLevel: $device"
     def currentLevel = device.currentValue('level')[0]
     def newLevel = currentLevel.toInteger() - decLevel
-    if (newLevel<0) newLevel=0
+    if (newLevel<1) newLevel=1 //Disable turning off light by dimming too low.
     device.setLevel(newLevel)
     log.debug "Level decreased by $decLevel to $newLevel"
 }
