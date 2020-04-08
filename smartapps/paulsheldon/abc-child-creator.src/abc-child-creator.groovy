@@ -568,7 +568,7 @@ private def textHelp() {
                 "	Push Notifications \n" +
                 "	SMS Notifications"
         }
-        section("** Quirk for HS-WD100+ on Button 5 & 6:") {
+       section("** Quirk for HS-WD100+ on Button 5 & 6:") {
             paragraph "Because a dimmer switch already uses Press&Hold to manually set the dimming level" +
                 " please be aware of this operational behavior. If you only want to manually change" +
                 " the dim level to the lights that are wired to the switch, you will automatically" +
@@ -659,6 +659,41 @@ def getSpecText() {
             case 8: return "Single Tap Lower Paddle"; break
         }
     }
+
+    if (state.buttonType.contains("WD200+ Dimmer")) {
+           switch (state.currentButton) {
+               case 1: return "Double-Tap Upper Paddle"; break
+               case 2: return "Double-Tap Lower Paddle"; break
+               case 3: return "Triple-Tap Upper Paddle"; break
+               case 4: return "Triple-Tap Lower Paddle"; break
+               case 5: return "Press & Hold Upper Paddle\n(See user guide for quirks)"; break
+               case 6: return "Press & Hold Lower Paddle\n(See user guide for quirks)"; break
+               case 7: return "Single Tap Upper Paddle\n(See user guide for quirks)"; break
+               case 8: return "Single Tap Lower Paddle\n(See user guide for quirks)"; break
+               case 9: return "4X-Tap Upper Paddle"; break
+               case 10: return "4X-Tap Lower Paddle"; break
+               case 11: return "5X-Tap Upper Paddle"; break
+               case 12: return "5X-Tap Lower Paddle"; break
+           }
+       }
+
+        if (state.buttonType.contains("WS200+ Switch")) {
+               switch (state.currentButton) {
+                   case 1: return "Double-Tap Upper Paddle"; break
+                   case 2: return "Double-Tap Lower Paddle"; break
+                   case 3: return "Triple-Tap Upper Paddle"; break
+                   case 4: return "Triple-Tap Lower Paddle"; break
+                   case 5: return "Press & Hold Upper Paddle"; break
+                   case 6: return "Press & Hold Lower Paddle"; break
+                   case 7: return "Single Tap Upper Paddle"; break
+                   case 8: return "Single Tap Lower Paddle"; break
+                   case 9: return "4X-Tap Upper Paddle"; break
+                   case 10: return "4X-Tap Lower Paddle"; break
+                   case 11: return "5X-Tap Upper Paddle"; break
+                   case 12: return "5X-Tap Lower Paddle"; break
+               }
+           }
+
     if (state.buttonType.contains("Inovelli")) {           
         switch (state.currentButton) {
             case 1: return "NOT OPERATIONAL - DO NOT USE"; break

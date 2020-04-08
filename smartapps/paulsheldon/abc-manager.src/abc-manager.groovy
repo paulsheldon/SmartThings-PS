@@ -39,6 +39,7 @@ def mainPage() {
         def childVer = "InitialSetup"
         if(childApps.size() > 0) {
             childVer = childApps.first().version()
+            log.debug "Using Child Version ${childApps.first().version()}"
         }
         section("Create a new button device mapping.") {
             app(name: "childApps", appName: "ABC Child Creator", namespace: "paulsheldon", title: "New Button Device Mapping", multiple: true)
