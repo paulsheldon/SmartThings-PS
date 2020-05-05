@@ -12,10 +12,18 @@
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
  *
+ *  Original Code by Scott Gibson
+ *
+ * == Changes - ABC Version Maintained by Paul Sheldon ==
+ * 2020-05-05 Renamed to Lightify Bulb - ABC    Version v1.20200505
+ *            Added Color Temperature Capability
+ *            Renamed ColorTemp Attribute to ColorTemperature
+ *            Renamed Command to setColorTemperature as per SmartThings Docs
+ *            Altered Temp Colours to match ABC Controller
  */
 
 metadata {
-	definition (name: "Lightify Bulb", namespace: "paulsheldon", author: "Scott Gibson / Paul Sheldon") {
+	definition (name: "Lightify Bulb - ABC", namespace: "paulsheldon", author: "Paul Sheldon") {
 
 		capability "Actuator"
         capability "Configuration"
@@ -66,8 +74,11 @@ metadata {
 			state "bulbTemp", label: '${currentValue}'
 		}
         valueTile("level", "device.level", inactiveLabel: false, decoration: "flat") {
-			state "level", label: 'Level ${currentValue}%'
-		}
+       			state "level", label: 'Level ${currentValue}%'
+       	}
+       	valueTile("level", "device.level", inactiveLabel: false, decoration: "flat") {
+            			state "level", label: 'Level ${currentValue}%'
+        }
 
 
 		main(["switch"])
@@ -227,7 +238,7 @@ def updated() {
 def configure() {
 
 	String zigbeeId = swapEndianHex(device.hub.zigbeeId)
-	log.debug "Confuguring Reporting and Bindings."
+	log.debug "Configuration Reporting and Bindings."
 	def configCmds = [
 
         //Switch Reporting
@@ -258,33 +269,14 @@ def uninstalled() {
 }
 
 private getBulbTemp(value) {
-
-    def s = "Soft White"
-
-	if (value < 2901) {
-    	return s
-    }
-    else if (value < 3376) {
-    	s = "Warm White"
-        return s
-    }
-    else if (value < 3916) {
-    	s = "Cool White"
-        return s
-    }
-    else if (value < 4601) {
-    	s = "Bright White"
-        return s
-    }
-    else if (value < 5751) {
-    	s = "Natural"
-        return s
-    }
-    else {
-    	s = "Daylight"
-        return s
-    }
-
+    if (value != null) {
+        if (value <2500) return "Warm Glow"
+        else if (value <3000) return "Warm White"
+        else if (value < 5000) return "Cool White"
+        else if (value < 6000)  return "Daylight"
+        else return "Cool Daylight"
+     }
+     return "White"
 }
 
 private getEndpointId() {
