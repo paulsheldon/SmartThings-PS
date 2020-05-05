@@ -2,7 +2,7 @@
  *
  *	Child Creator - Advanced Button Controller
  *
- *	Author: SmartThings, modified by Bruce Ravenel, Dale Coffing, Stephan Hackett, Paul Sheldon, Gabor Szabados
+ *	Author: SmartThings, modified by Bruce Ravenel, Dale Coffing, Stephan Hackett, Paul Sheldon
  *  Maintained by: Paul Sheldon with thanks to Stephan Hackett
  *
  *
@@ -25,6 +25,8 @@
  * 02/01/20  - added support (beta) for fan control
  *             added support for Inovelli Red Series Switch & Dimmer (inc config button 7)
  * 05/05/20  - added support WS200 Dimmer & Switch
+ *             added support for Ikea Buttons provided by hyvamiesh
+ *             Dimming lights does not switch light off provided by hyvamiesh
  *
  *
  *	DO NOT PUBLISH !!!!
@@ -64,6 +66,7 @@ def chooseButton() {
             state.buttonType = getButtonType(buttonDevice.typeName)
             log.debug "Device Type is now set to: " + state.buttonType
             state.buttonCount = manualCount ?: buttonDevice.currentValue('numberOfButtons')
+            log.debug "Device has " + state.buttonCount + "Buttons."
             //if(state.buttonCount==null) state.buttonCount = buttonDevice.currentValue('numButtons')	//added for Kyse minimote(hopefully will be updated to correct attribute name)
             section("Step 2: Configure Buttons for Selected Device") {
                 if (state.buttonCount < 1) {
@@ -380,7 +383,7 @@ def volumeDown(device, decLevel) {
 */
 def colourTempUp(device, incTemp) {
     log.debug "Incrementing Colour Temp: $device"
-    def currentTemp = device.currentValue('kelvin')[0]
+    def currentTemp = device.currentValue('colorTemperature')[0]
     def newTemp = currentTemp + incTemp > 6500 ? 6500 : currentTemp + incTemp
     device.setColorTemperature(newTemp)
     def colorTempName = colourTempName(newTemp)
@@ -390,8 +393,8 @@ def colourTempUp(device, incTemp) {
 
 def colourTempDown(device, decTemp) {
     log.debug "Decrementing Colour Temp: $device"
-    def currentTemp = device.currentValue('kelvin')[0]
-    def newTemp = currentTemp - decTemp < 2700 ? 2700 : currentTemp - decTemp
+    def currentTemp = device.currentValue('colourTemperature')[0]
+    def newTemp = currentTemp - decTemp < 2200 ? 2200 : currentTemp - decTemp
     device.setColorTemperature(newTemp)
     def colorTempName = colourTempName(newTemp)
     sendEvent(name: "colorName", value: colorTempName)
@@ -424,7 +427,7 @@ def levelDown(device, decLevel) {
     log.debug "Decrementing Level by -$decLevel: $device"
     def currentLevel = device.currentValue('level')[0]
     def newLevel = currentLevel.toInteger() - decLevel
-    if (newLevel<0) newLevel=0
+    if (newLevel<1) newLevel=1 // Disable turning off light by dimming too low
     device.setLevel(newLevel)
     log.debug "Level decreased by $decLevel to $newLevel"
 }
@@ -726,6 +729,23 @@ def getSpecText() {
             case 15: return "2X Tap Button 7\nHold Not Available"; break
             case 16: return "2X Tap Button 8\nHold Not Available"; break
         }
+    }
+    if (state.buttonType == "Ikea Button") {
+          if (state.buttonCount == 5) {
+              switch (state.currentButton) {
+                  case 1: return "Up Button"; break
+                  case 2: return "Right Button"; break
+                  case 3: return "Down Button"; break
+                  case 4: return "Left Button"; break
+                  case 5: return "Middle Button"; break
+              }
+          }
+          if (state.buttonCount == 2) {
+              switch (state.currentButton) {
+                  case 1: return "Up Button"; break
+                  case 2: return "Down Button"; break
+              }
+          }
     }
     return "Not Specified By Device"
 }
