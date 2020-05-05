@@ -66,13 +66,9 @@ def chooseButton() {
             state.buttonType = getButtonType(buttonDevice.typeName)
             log.debug "Device Type is now set to: " + state.buttonType
             state.buttonCount = manualCount ?: buttonDevice.currentValue('numberOfButtons')
-<<<<<<< HEAD
+
             log.debug "Device has " + state.buttonCount + "Buttons."
             //if(state.buttonCount==null) state.buttonCount = buttonDevice.currentValue('numButtons')	//added for Kyse minimote(hopefully will be updated to correct attribute name)
-=======
-            log.debug "Device has " + state.buttonCount + " buttons."
-            //if(state.buttonCount==null) state.buttonCount = buttonDevice.currentValue('numButtons')	//added for kyse minimote(hopefully will be updated to correct attribute name)
->>>>>>> origin/master
             section("Step 2: Configure Buttons for Selected Device") {
                 if (state.buttonCount < 1) {
                     paragraph "The selected button device did not report the number of buttons it has. Please specify in the Advanced Config section below."
