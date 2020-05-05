@@ -65,3 +65,9 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/phpstorm
 
+smartapps/paulsheldon/abc-manager.src/.idea/.gitignore
+smartapps/paulsheldon/abc-manager.src/.idea/abc-manager.src.iml
+smartapps/paulsheldon/abc-manager.src/.idea/deployment.xml
+smartapps/paulsheldon/abc-manager.src/.idea/misc.xml
+smartapps/paulsheldon/abc-manager.src/.idea/modules.xml
+smartapps/paulsheldon/abc-manager.src/.idea/vcs.xml
