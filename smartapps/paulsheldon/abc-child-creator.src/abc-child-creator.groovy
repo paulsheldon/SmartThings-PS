@@ -30,7 +30,7 @@
  *	DO NOT PUBLISH !!!!
  */
 
-def version(){"v0.3.200201"}
+def version(){"v1.200505"}
 
 definition(
         name: "ABC Child Creator",
