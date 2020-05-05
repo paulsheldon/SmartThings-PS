@@ -10,7 +10,7 @@
  * 1/14/18 - updated Version check code
  * 1/15/18 - added icon support for Inovelli Switches (NZW30S and NZW31S)
  *		   - small adjustments to "Configure Button" page layout
- * 1/28/18 - Added Icons and details for Remotec ZRC-90US Button Controller.
+ * 1/28/18 - Added Icons and details for Remote ZRC-90US Button Controller.
  * 2/08/18 - reformatted Button Config Preview
  * 2/12/18 - re-did getDescription() to only display Pushed/Held preview if it exists
  *			restructured detailsMap and button config build for easy editing
@@ -24,6 +24,8 @@
  *			  new capabilities of the Sonos speakers, code provided by Gabor Szabados
  * 02/01/20  - added support (beta) for fan control
  *             added support for Inovelli Red Series Switch & Dimmer (inc config button 7)
+ * 05/05/20  - added support WS200 Dimmer & Switch
+ *
  *
  *	DO NOT PUBLISH !!!!
  */
@@ -33,7 +35,7 @@ def version(){"v0.3.200201"}
 definition(
         name: "ABC Child Creator",
         namespace: "paulsheldon",
-        author: "Stephan Hackett / Paul Sheldon / Gabor Szabados [Sonos]",
+        author: "Stephan Hackett / Paul Sheldon",
         description: "SHOULD NOT BE PUBLISHED",
         category: "My Apps",
         parent: "paulsheldon:ABC Manager",
@@ -62,7 +64,7 @@ def chooseButton() {
             state.buttonType = getButtonType(buttonDevice.typeName)
             log.debug "Device Type is now set to: " + state.buttonType
             state.buttonCount = manualCount ?: buttonDevice.currentValue('numberOfButtons')
-            //if(state.buttonCount==null) state.buttonCount = buttonDevice.currentValue('numButtons')	//added for kyse minimote(hopefully will be updated to correct attribute name)
+            //if(state.buttonCount==null) state.buttonCount = buttonDevice.currentValue('numButtons')	//added for Kyse minimote(hopefully will be updated to correct attribute name)
             section("Step 2: Configure Buttons for Selected Device") {
                 if (state.buttonCount < 1) {
                     paragraph "The selected button device did not report the number of buttons it has. Please specify in the Advanced Config section below."
@@ -169,16 +171,16 @@ def isReq(myFeature) {
 }
 
 def getDescription(dNumber) {
-    def descript = ""
+    def description = ""
     if (!(settings.find { it.key.contains("_${dNumber}_") })) return "Tap to configure"
     if (settings.find {
         it.key.contains("_${dNumber}_pushed")
-    }) descript = "\nPUSHED:" + getDescDetails(dNumber, "_pushed") + "\n"
+    }) description = "\nPUSHED:" + getDescDetails(dNumber, "_pushed") + "\n"
     if (settings.find {
         it.key.contains("_${dNumber}_held")
-    }) descript = descript + "\nHELD:" + getDescDetails(dNumber, "_held") + "\n"
-    //if(anySettings) descript = "PUSHED:"+getDescDetails(dNumber,"_pushed")+"\n\nHELD:"+getDescDetails(dNumber,"_held")//"CONFIGURED : Tap to edit"
-    return descript
+    }) description = description + "\nHELD:" + getDescDetails(dNumber, "_held") + "\n"
+    //if(anySettings) description = "PUSHED:"+getDescDetails(dNumber,"_pushed")+"\n\nHELD:"+getDescDetails(dNumber,"_held")//"CONFIGURED : Tap to edit"
+    return description
 }
 
 def getDescDetails(bNum, type) {

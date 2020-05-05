@@ -14,6 +14,8 @@
  *             new capabilities of the Sonos speakers - code provided by Gabor Szabados
  * 02/01/20  - added support (beta) for fan control
  *             added support for Inovelli Red Series Switch & Dimmer (inc config button 7)
+ * 05/05/20  - added support WS200 Dimmer & Switch
+ *
  */
 
 definition(
@@ -128,7 +130,7 @@ def aboutPage() {
         }
         section("**** Philips Hue Dimmer:") {
             paragraph "Philips Hue Dimmers are not natively supported by SmartThings.\n"+
-                "A device handler that works with Smart Apps can be found on @paulsheldon\nhttps://github.com/paulsheldon/SmartThings-PS"
+                "A device handler that works with Smart Apps can be found on @paulsheldon\n https://github.com/paulsheldon/SmartThings-PS"
         }
     }
   }
