@@ -6,7 +6,7 @@ Here you will find my created SmartApps and Device Handlers as listed below.
 
 # Smart Apps
 
-## ABC Advanced Button Controller
+## ABC Advanced Button Controller - Updated 2020-05-05
 
 This is an updated version of **ABC** by Stephan Hackett ([See original repository here](https://github.com/stephack/ABC)).
 
@@ -19,11 +19,16 @@ This is an updated version of **ABC** by Stephan Hackett ([See original reposito
 
 ## Hue Dimmer Switch
 
-This is an updated version **Hue Dimmer Switch** by Stephen McLaughlin ([See original repository here](https://github.com/digitalgecko/mySmartThings))
+This is an updated version **Hue Dimmer Switch** by Stephen McLaughlin ([See original repository here](https://github.com/sticks18/Lightify-Bulb))
 
 ### Updated Features
  - Added support for **Smart App button numbers (1,2,3,4)**
  - Added option to switch between button names or numbers
+
+## Lightify Bulb -ABC
+
+This is an updated version **Lightify Bulb ** by Scott Gibson ([See original repository here](https://github.com/digitalgecko/mySmartThings)))
+This has corrected ColourTemperature to work with ABC and a few other tweaks
 
 ## Zigbee Switch Power
 
