@@ -17,17 +17,16 @@
  *			made subValue inputs "hidden" and "required" when appropriate
  *
  * == Code now maintained by Paul Sheldon ==
- * 05/02/19 - Added images and code for Hue Dimmer Switches
- *          - Added options for Color Temperature
- *          - Reworked some code
- * 09/25/19 - updated volume control, play/pause, next/previous track and mute/unmute for the
- *			  new capabilities of the Sonos speakers, code provided by Gabor Szabados
- * 02/01/20  - added support (beta) for fan control
- *             added support for Inovelli Red Series Switch & Dimmer (inc config button 7)
- * 05/05/20  - added support WS200 Dimmer & Switch
- *             added support for Ikea Buttons provided by hyvamiesh
- *             Dimming lights does not switch light off provided by hyvamiesh
- *
+ * 2019-02-05 Added images and code for Hue Dimmer Switches
+ *            Added options for Color Temperature
+ *            Reworked some code
+ * 2019-09-25 Updated volume control, play/pause, next/previous track and mute/unmute for the
+ *			  New capabilities of the Sonos speakers, code provided by Gabor Szabados
+ * 2020-01-02 Added support (beta) for fan control
+ *            Added support for Inovelli Red Series Switch & Dimmer (inc config button 7)
+ * 2020-05-05 Added support WS200 Dimmer & Switch
+ *            Added support for Ikea Buttons provided by hyvamiesh
+ *            Dimming lights does not switch light off provided by hyvamiesh
  *
  *	DO NOT PUBLISH !!!!
  */
@@ -398,20 +397,19 @@ def colourTempDown(device, decTemp) {
     def newTemp = currentTemp - decTemp < 2200 ? 2200 : currentTemp - decTemp
     device.setColorTemperature(newTemp)
     def colorTempName = colourTempName(newTemp)
-    sendEvent(name: "colorName", value: colorTempName)
+      sendEvent(name: "colorName", value: colorTempName)
     log.debug "Colour Temp Changed to $colorTempName"
 }
 
 private colourTempName(value) {
-    def newColor = "White"
     if (value != null) {
-        if (value < 3000) newColor = "Warm"
-        else if (value < 4000) newColor = "Warm White"
-        else if (value < 5000) newColor = "Cool White"
-        else if (value < 6000) newColor = "Daylight"
-        else if (value >= 6000) newColor = "Cool Daylight"
+       if (value <2500) return "Warm Glow"
+       else if (value <3000) return "Warm White"
+       else if (value < 5000) return "Cool White"
+       else if (value < 6000)  return "Daylight"
+       else return "Cool Daylight"
     }
-    return newColor
+    return "White"
 }
 
 def levelUp(device, incLevel) {
@@ -769,16 +767,3 @@ def getSpecText(currentButton) {
     }
     return "Not Specified By Device"
 }
-
-/*
-FOR NEW INPUTS
-1. add input to config
-2. add info to detailMappings including sub-value if needed
-3. ensure correct type is used in map..or create a new one with its own formattedPage
-
-FOR NEW BUTTON DEVICE TYPES
-1. ensure device reports buttonNumber
-2. if not, add sendEvent to DTH as needed OR just enter manually
-3. add any special instructions to getSpecText() using dth name
-4. create pics for each button using dthName+dNumber
-*/
