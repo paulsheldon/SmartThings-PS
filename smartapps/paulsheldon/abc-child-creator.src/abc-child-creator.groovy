@@ -66,8 +66,13 @@ def chooseButton() {
             state.buttonType = getButtonType(buttonDevice.typeName)
             log.debug "Device Type is now set to: " + state.buttonType
             state.buttonCount = manualCount ?: buttonDevice.currentValue('numberOfButtons')
+<<<<<<< HEAD
             log.debug "Device has " + state.buttonCount + "Buttons."
             //if(state.buttonCount==null) state.buttonCount = buttonDevice.currentValue('numButtons')	//added for Kyse minimote(hopefully will be updated to correct attribute name)
+=======
+            log.debug "Device has " + state.buttonCount + " buttons."
+            //if(state.buttonCount==null) state.buttonCount = buttonDevice.currentValue('numButtons')	//added for kyse minimote(hopefully will be updated to correct attribute name)
+>>>>>>> origin/master
             section("Step 2: Configure Buttons for Selected Device") {
                 if (state.buttonCount < 1) {
                     paragraph "The selected button device did not report the number of buttons it has. Please specify in the Advanced Config section below."
@@ -427,7 +432,7 @@ def levelDown(device, decLevel) {
     log.debug "Decrementing Level by -$decLevel: $device"
     def currentLevel = device.currentValue('level')[0]
     def newLevel = currentLevel.toInteger() - decLevel
-    if (newLevel<1) newLevel=1 // Disable turning off light by dimming too low
+    if (newLevel<1) newLevel=1 //Disable turning off light by dimming too low.
     device.setLevel(newLevel)
     log.debug "Level decreased by $decLevel to $newLevel"
 }
@@ -711,6 +716,7 @@ def getSpecText(currentButton) {
             case 7: if (state.buttonType.contains("Red")) { return "1x Tap Config Button"; break; }
         }
     }
+
     if (state.buttonType.contains("ZRC-90")) {
         switch (state.currentButton) {
             case 1: return "Tap or Hold Button 1"; break
@@ -731,6 +737,7 @@ def getSpecText(currentButton) {
             case 16: return "2X Tap Button 8\nHold Not Available"; break
         }
     }
+
      if (state.buttonType.contains("Zen27")) {
           switch (currentButton) {
               case 1: return "1 x up"; break
@@ -745,6 +752,7 @@ def getSpecText(currentButton) {
               case 10: return "5 x down"; break
             }
      }
+     
     if (state.buttonType == "Ikea Button") {
           if (state.buttonCount == 5) {
               switch (state.currentButton) {
@@ -761,6 +769,7 @@ def getSpecText(currentButton) {
                   case 2: return "Down Button"; break
               }
           }
+
     }
     return "Not Specified By Device"
 }
