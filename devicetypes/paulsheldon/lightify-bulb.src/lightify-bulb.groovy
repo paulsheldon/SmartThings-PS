@@ -186,14 +186,16 @@ def setLevel(value) {
 def setColorTemperature(value) {
 
     log.trace "setColorTemperature($value)"
+    if (value < 2700) { value = 2700 }
+    if (value > 6500) { value = 6500 }
+     log.trace "Color Temperature($value)"
 
    	def degrees = Math.round(value)
-    if (degrees < 2700) { degrees = 2700 }
-    if (degrees > 6500) { degrees = 6500 }
     log.trace degrees
 
     def bulbTemp = getBulbTemp(degrees)
     log.trace bulbTemp
+
 
 
 	def cmds = []
