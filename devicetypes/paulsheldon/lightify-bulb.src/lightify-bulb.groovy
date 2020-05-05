@@ -22,6 +22,7 @@ metadata {
 		capability "Refresh"
 		capability "Switch"
 		capability "Switch Level"
+		capability "Color Temperature"
         
         command "setColorTemp"
         

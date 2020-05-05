@@ -393,7 +393,7 @@ def colourTempUp(device, incTemp) {
 
 def colourTempDown(device, decTemp) {
     log.debug "Decrementing Colour Temp: $device"
-    def currentTemp = device.currentValue('colourTemperature')[0]
+    def currentTemp = device.currentValue('colorTemperature')[0]
     def newTemp = currentTemp - decTemp < 2200 ? 2200 : currentTemp - decTemp
     device.setColorTemperature(newTemp)
     def colorTempName = colourTempName(newTemp)
@@ -603,7 +603,8 @@ def getButtonType(buttonName) {
     return buttonName
 }
 
-def getSpecText() {
+def getSpecText(currentButton) {
+    currentButton=(currentButton==null ? state.currentButton : currentButton)
     if (state.buttonType == "Lutron Pico") {
         switch (state.currentButton) {
             case 1: return "Top Button"; break
@@ -730,6 +731,20 @@ def getSpecText() {
             case 16: return "2X Tap Button 8\nHold Not Available"; break
         }
     }
+     if (state.buttonType.contains("Zen27")) {
+          switch (currentButton) {
+              case 1: return "1 x up"; break
+              case 2: return "1 x down"; break
+              case 3: return "2 x up"; break
+              case 4: return "2 x down"; break
+              case 5: return "3 x up"; break
+              case 6: return "3 x down"; break
+              case 7: return "4 x up"; break
+              case 8: return "4 x down"; break
+              case 9: return "5 x up"; break
+              case 10: return "5 x down"; break
+            }
+     }
     if (state.buttonType == "Ikea Button") {
           if (state.buttonCount == 5) {
               switch (state.currentButton) {
