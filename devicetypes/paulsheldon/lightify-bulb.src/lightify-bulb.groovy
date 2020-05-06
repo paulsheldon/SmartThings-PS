@@ -12,10 +12,18 @@
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
  *
+ *  Original Code by Scott Gibson
+ *
+ * == Changes - ABC Version Maintained by Paul Sheldon ==
+ * 2020-05-05 Renamed to Lightify Bulb - ABC    Version v1.20200505
+ *            Added Color Temperature Capability
+ *            Renamed ColorTemp Attribute to ColorTemperature
+ *            Renamed Command to setColorTemperature as per SmartThings Docs
+ *            Altered Temp Colours to match ABC Controller
  */
- 
+
 metadata {
-	definition (name: "Lightify Bulb", namespace: "paulsheldon", author: "Scott Gibson / Paul Sheldon") {
+	definition (name: "Lightify Bulb - ABC", namespace: "paulsheldon", author: "Paul Sheldon") {
 
 		capability "Actuator"
         capability "Configuration"
@@ -23,13 +31,13 @@ metadata {
 		capability "Switch"
 		capability "Switch Level"
 		capability "Color Temperature"
-        
-        command "setColorTemp"
-        
-        attribute "colorTemp", "string"
+
+        command "setColorTemperature"
+
+        attribute "colorTemperature", "string"
 		attribute "kelvin", "string"
         attribute "bulbTemp", "string"
-        
+
 		fingerprint profileId: "0104", inClusters: "0000,0003,0004,0005,0006,0008,0300,0B04,FC0F", outClusters: "0019"
 	}
 
@@ -56,8 +64,8 @@ metadata {
 		controlTile("levelSliderControl", "device.level", "slider", height: 1, width: 2, inactiveLabel: false) {
 			state "level", action:"switch level.setLevel"
 		}
-        controlTile("colorSliderControl", "device.colorTemp", "slider", height: 1, width: 2, inactiveLabel: false, range: "(2700..6500)") {
-			state "colorTemp", action:"setColorTemp"
+        controlTile("colorSliderControl", "device.colorTemperature", "slider", height: 1, width: 2, inactiveLabel: false, range: "(2700..6500)") {
+			state "colorTemperature", action:"setColorTemperature"
 		}
 		valueTile("kelvin", "device.kelvin", inactiveLabel: false, decoration: "flat") {
 			state "kelvin", label: 'Temp ${currentValue}K'
@@ -66,9 +74,12 @@ metadata {
 			state "bulbTemp", label: '${currentValue}'
 		}
         valueTile("level", "device.level", inactiveLabel: false, decoration: "flat") {
-			state "level", label: 'Level ${currentValue}%'
-		}
-		
+       			state "level", label: 'Level ${currentValue}%'
+       	}
+       	valueTile("level", "device.level", inactiveLabel: false, decoration: "flat") {
+            			state "level", label: 'Level ${currentValue}%'
+        }
+
 
 		main(["switch"])
 		details(["switch", "bulbTemp", "refresh", "levelSliderControl", "level", "colorSliderControl", "kelvin"])
@@ -80,19 +91,19 @@ metadata {
 def parse(String description) {
 	log.trace description
 	def msg = zigbee.parse(description)
-    
+
     if (description?.startsWith("catchall:")) {
-		
+
 		log.trace msg
 		log.trace "data: $msg.data"
-        
+
         if(description?.endsWith("0100") ||description?.endsWith("1001"))
         {
         	def result = createEvent(name: "switch", value: "on")
             log.debug "Parse returned ${result?.descriptionText}"
             return result
         }
-        
+
         if(description?.endsWith("0000") || description?.endsWith("1000"))
         {
         	def result = createEvent(name: "switch", value: "off")
@@ -100,30 +111,30 @@ def parse(String description) {
             return result
         }
 	}
-    
-    
+
+
    if (description?.startsWith("read attr")) {
-   	
+
         Map descMap = (description - "read attr - ").split(",").inject([:]) { map, param ->
 		def nameAndValue = param.split(":")
 		map += [(nameAndValue[0].trim()):nameAndValue[1].trim()]
 		}
-		
+
         log.debug "Desc Map: $descMap"
- 
+
         switch (descMap.cluster) {
-        
+
         	case "0008":
-            
+
         		log.debug description[-2..-1]
         		def i = Math.round(convertHexToInt(descMap.value) / 256 * 100 )
         		sendEvent( name: "level", value: i )
                 sendEvent( name: "switch.setLevel", value: i) //added to help subscribers
                 break
-                
+
          	case "0300":
-            
-            	log.debug descMap.value               
+
+            	log.debug descMap.value
                 def i = Math.round( 1000000 / convertHexToInt(descMap.value))
                	def j = i
                 def bTemp = getBulbTemp(j)
@@ -131,17 +142,17 @@ def parse(String description) {
                 sendEvent( name: "kelvin", value: i)
                 sendEvent( name: "bulbTemp", value: bTemp)
                 break
-    	}            
-                
+    	}
+
     }
-    
-	
+
+
 }
 
 def on() {
 	log.debug "on()"
 	sendEvent(name: "switch", value: "on")
-    
+
     "st cmd 0x${device.deviceNetworkId} ${endpointId} 6 1 {}"
     }
 
@@ -150,11 +161,11 @@ def off() {
 	sendEvent(name: "switch", value: "off")
     sendEvent(name: "level", value: 99)
 	"st cmd 0x${device.deviceNetworkId} ${endpointId} 6 0 {}"
- 
+
 }
 
 def refresh() {
-    
+
     [
 	"st rattr 0x${device.deviceNetworkId} ${endpointId} 6 0", "delay 500",
     "st rattr 0x${device.deviceNetworkId} ${endpointId} 8 0", "delay 500",
@@ -183,30 +194,30 @@ def setLevel(value) {
 	cmds
 }
 
-def setColorTemp(value) {
-	
-    log.trace "setColorTemp($value)"
-    
+def setColorTemperature(value) {
 
-    
+    log.trace "setColorTemperature($value)"
+    if (value < 2700) { value = 2700 }
+    if (value > 6500) { value = 6500 }
+     log.trace "Color Temperature($value)"
+
    	def degrees = Math.round(value)
-    if (degrees < 2700) { degrees = 2700 }
-    if (degrees > 6500) { degrees = 6500 }
-	
-    def bTemp = getBulbTemp(degrees)
-    
     log.trace degrees
-    
+
+    def bulbTemp = getBulbTemp(degrees)
+    log.trace bulbTemp
+
+
+
 	def cmds = []
-	
-	sendEvent(name: "colorTemp", value: value)
+	sendEvent(name: "colorTemperature", value: value)
     sendEvent(name: "kelvin", value: degrees)
-    sendEvent( name: "bulbTemp", value: bTemp)
-    
+    sendEvent( name: "bulbTemp", value: bulbTemp)
+
 	def levelC = swapEndianHex(hexSixteen(1000000/degrees))
-    
+
     log.trace levelC
-    
+
 	cmds << "st cmd 0x${device.deviceNetworkId} ${endpointId} 0x0300 0x0a {${levelC} 2000}"
 
 	//log.debug cmds
@@ -214,7 +225,7 @@ def setColorTemp(value) {
 }
 
 def updated() {
-	
+
     /*
     [
 	"st wattr 0x${device.deviceNetworkId} ${endpointId} 8 0x10 0x21 {0015}", "delay 500",
@@ -227,21 +238,21 @@ def updated() {
 def configure() {
 
 	String zigbeeId = swapEndianHex(device.hub.zigbeeId)
-	log.debug "Confuguring Reporting and Bindings."
-	def configCmds = [	
-  
+	log.debug "Configuration Reporting and Bindings."
+	def configCmds = [
+
         //Switch Reporting
         "zcl global send-me-a-report 6 0 0x10 0 3600 {01}", "delay 500",
         "send 0x${device.deviceNetworkId} ${endpointId} 1", "delay 1000",
-        
+
         //Level Control Reporting
         "zcl global send-me-a-report 8 0 0x20 5 3600 {0010}", "delay 200",
         "send 0x${device.deviceNetworkId} ${endpointId} 1", "delay 1500",
-        
+
         //Color Temp Reporting
         "zcl global send-me-a-report 0x0300 7 0x21 5 3600 {0010}", "delay 200",
         "send 0x${device.deviceNetworkId} ${endpointId} 1", "delay 1500",
-        
+
         "zdo bind 0x${device.deviceNetworkId} ${endpointId} 1 6 {${device.zigbeeId}} {}", "delay 1000",
 		"zdo bind 0x${device.deviceNetworkId} ${endpointId} 1 8 {${device.zigbeeId}} {}", "delay 1000",
         "zdo bind 0x${device.deviceNetworkId} ${endpointId} 1 0x0300 {${device.zigbeeId}} {}", "delay 500",
@@ -252,39 +263,20 @@ def configure() {
 def uninstalled() {
 
 	log.debug "uninstalled()"
-		
+
 	response("zcl rftd")
- 
+
 }
 
 private getBulbTemp(value) {
-	
-    def s = "Soft White"
-    
-	if (value < 2901) {
-    	return s
-    } 
-    else if (value < 3376) {
-    	s = "Warm White"
-        return s
-    }
-    else if (value < 3916) {
-    	s = "Cool White"
-        return s
-    }
-    else if (value < 4601) {
-    	s = "Bright White"
-        return s
-    }
-    else if (value < 5751) {
-    	s = "Natural"
-        return s
-    }
-    else {
-    	s = "Daylight"
-        return s
-    }
-
+    if (value != null) {
+        if (value <2500) return "Warm Glow"
+        else if (value <3000) return "Warm White"
+        else if (value < 5000) return "Cool White"
+        else if (value < 6000)  return "Daylight"
+        else return "Cool Daylight"
+     }
+     return "White"
 }
 
 private getEndpointId() {
