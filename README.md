@@ -8,6 +8,16 @@ Here you will find my created SmartApps and Device Handlers as listed below.
 
 ## ABC Advanced Button Controller - Updated 2020-05-05
 
+# Updated Features
+ - Added Inovelli Red Series Switch (may also support Black Series)
+ - Added ZRC-90 Scene Controller 
+ - Added Zen27
+ - Added Ikea Button (5 buttons)
+ - Added WS200+ Switch & Dimmer
+ - Added Sonos Integration (Beta)
+ - Updated Lightify Device Handler to allow Colour Temperature settings
+ 
+
 This is an updated version of **ABC** by Stephan Hackett ([See original repository here](https://github.com/stephack/ABC)).
 
 ### Updated Features
