@@ -66,14 +66,14 @@ def chooseButton() {
             log.debug "Device Type is now set to: " + state.buttonType
             state.buttonCount = manualCount ?: buttonDevice.currentValue('numberOfButtons')
 
-            log.debug "Device has " + state.buttonCount + "Buttons."
-            //if(state.buttonCount==null) state.buttonCount = buttonDevice.currentValue('numButtons')	//added for Kyse minimote(hopefully will be updated to correct attribute name)
+            log.debug "Device has " + state.buttonCount + " Buttons"
             section("Step 2: Configure Buttons for Selected Device") {
                 if (state.buttonCount < 1) {
                     paragraph "The selected button device did not report the number of buttons it has. Please specify in the Advanced Config section below."
                 } else {
+                    log.debug("Show Hardware Specs: ${showHWSpecs==true ? 'Yes' : 'No'}")
                     for (i in 1..state.buttonCount) {
-                        href "configButtonsPage", title: "Button ${i}", state: getDescription(i) != "Tap to configure" ? "complete" : null, description: getDescription(i), params: [pbutton: i]
+                        href "configButtonsPage", title: "Button ${i}" + ((showHWSpecs==true && getSpecText(i)!= null) ?  "\n ${getSpecText(i)}" : ""), state: getDescription(i) != "Tap to configure" ? "complete" : null, description: getDescription(i), params: [pbutton: i]
                     }
                 }
             }
@@ -84,7 +84,8 @@ def chooseButton() {
         section("Advanced Config:", hideable: true, hidden: hideOptionsSection()) {
             input "manualCount", "number", title: "Set/Override # of Buttons?", required: false, description: "Only set if DTH does not report", submitOnChange: true
             input "collapseAll", "bool", title: "Collapse Unconfigured Sections?", defaultValue: true
-            input "hwSpecifics", "bool", title: "Hide H/W Specific Details?", defaultValue: false
+            input "showButtonImage", "bool", title: "Show Image on Button Setup?", defaultValue: true
+            input "showHWSpecs", "bool", title: "Show H/W Specific Details?", defaultValue: true
             input "fanIgnoreOff", "bool", title: "Ignore Fan Off?", defaultValue: false
             input "sonos", "bool", title: "Using a Sonos?", defaultValue: false
         }
@@ -106,9 +107,13 @@ def configButtonsPage(params) {
 def getButtonSections(buttonNumber) {
     return {
         def picNameNoSpace = "${state.buttonType}${state.currentButton}.png" - " " - " " - " " - "/" - "-"
+        log.debug("Button Image Name: $picNameNoSpace")
         log.debug picNameNoSpace
+        log.debug("Show Button Image: ${showButtonImage==true ? 'Yes' : 'No'}")
+        if (showButtonImage == true){
         section() {    //"Hardware specific info on button selection:") {
-            if (hwSpecifics == false) paragraph image: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/${picNameNoSpace}", "${getSpecText()}"
+             paragraph image: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/${picNameNoSpace}", "${getSpecText()}"
+        }
         }
         def myDetail
         for (i in 1..20) {//Build 1st 20 Button Config Options
@@ -359,7 +364,7 @@ def speakerMute(device) {
 */
 def volumeUp(device, incLevel) {
     log.debug "Incrementing Volume by +$incLevel: $device"
-    def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0] 
+    def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0]
     //currentLevel return a list...[0] is first item in list ie volume level
     def newVolume = currentVolume.toInteger() + incLevel
     if (newVolume>100) newVolume=100
@@ -370,7 +375,7 @@ def volumeUp(device, incLevel) {
 
 def volumeDown(device, decLevel) {
     log.debug "Decrementing Volume by -$decLevel: $device"
-    def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0] 
+    def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0]
     def newVolume = currentVolume.toInteger() - decLevel
     if (newVolume<0) newVolume=0
     if (sonos == true ) device.setVolume(newVolume)
@@ -699,7 +704,7 @@ def getSpecText(currentButton) {
                }
            }
 
-    if (state.buttonType.contains("Inovelli")) {           
+    if (state.buttonType.contains("Inovelli")) {
         switch (state.currentButton) {
             case 1: return "NOT OPERATIONAL - DO NOT USE"; break
             case 2: return "2X Tap Upper Paddle = Pushed\n2X Tap Lower Paddle = Held"; break
@@ -746,7 +751,7 @@ def getSpecText(currentButton) {
               case 10: return "5 x down"; break
             }
      }
-     
+
     if (state.buttonType == "Ikea Button") {
           if (state.buttonCount == 5) {
               switch (state.currentButton) {
