@@ -27,11 +27,13 @@
  * 2020-05-05 Added support WS200 Dimmer & Switch
  *            Added support for Ikea Buttons provided by hyvamiesh
  *            Dimming lights does not switch light off provided by hyvamiesh
+ * 2020-05-12 Added option to see button function in device list
+ *            if information is available for button, if not available please raise issue in GitHub
  *
  *	DO NOT PUBLISH !!!!
  */
 
-def version(){"v1.200505"}
+def version(){"v1.200709"}
 
 definition(
         name: "ABC Child Creator",
@@ -117,6 +119,7 @@ def getButtonSections(buttonNumber) {
         }
         def myDetail
         for (i in 1..20) {//Build 1st 20 Button Config Options
+        for (i in 1..21) {//Build 1st 21 Button Config Options
             myDetail = getPrefDetails().find { it.sOrder == i }
             section(hideable: true, hidden: !(shallHide("${myDetail.id}${buttonNumber}") || shallHide("${myDetail.sub}${buttonNumber}")), myDetail.secLabel) {
                 input "${myDetail.id}${buttonNumber}_pushed", myDetail.cap, title: "When Pushed", multiple: true, required: false, submitOnChange: collapseAll
@@ -265,11 +268,13 @@ def getPrefDetails() {
              [id: 'locks_', sOrder: 18, desc: 'Lock', comm: setUnlock, type: 'normal', secLabel: 'Locks (Lock Only)                                             ', cap: 'capability.lock'],
              [id: 'fanAdjust_', sOrder: 19, desc: 'Adjust', comm: adjustFan, type: 'normal', secLabel: 'Fans (Adjust - Low, Medium, High, Off)         ', cap: 'capability.switchLevel'],
              [id: 'shadeAdjust_', sOrder: 20, desc: 'Adjust', comm: adjustShade, type: 'normal', secLabel: 'Shades (Adjust - Up, Down, or Stop)              ', cap: 'capability.doorControl'],
+             [id: 'offOnReset_', sOrder: 21, desc: 'Off/On Reset', comm: offOnReset, type: 'normal', secLabel: 'Switches (Reset Off/ON)                               ', cap: 'capability.switch'],
              [id: 'mode_', desc: 'Set Mode', comm: changeMode, type: 'normal'],
              [id: 'phrase_', desc: 'Run Routine', comm: runRout, type: 'normal'],
              [id: 'notifications_', desc: 'Send Push Notification', comm: messageHandle, sub: 'valNotify', type: 'bool'],
              [id: 'phone_', desc: 'Send SMS', comm: smsHandle, sub: 'notifications_', type: 'normal'],
              [id: 'container_', desc: 'Cycle Playlist', comm: cyclePL, type: 'normal'],
+
             ]
     return detailMappings
 }
@@ -449,6 +454,19 @@ def toggle(devices) {
     else devices.on()
 }
 
+def offOnReset(devices) {
+    log.debug "Off/On Reset: $devices"
+    if (devices*.currentValue('switch').contains('on')) {
+    	devices.off()
+    	devices.on()
+    }
+    else{
+        devices.on()
+    	devices.off()
+    	devices.on()
+       }
+}
+
 def dimToggle(devices, dimLevel) {
     log.debug "Toggling On/Off | Dimming (to $dimLevel): $devices"
     if (devices*.currentValue('switch').contains('on')) devices.off()
@@ -536,67 +554,74 @@ private timeIntervalLabel() {
 }
 
 private def textHelp() {
-    def text =
-        section("User's Guide - Advanced Button Controller") {
-            paragraph "This smart app allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n" +
-                "HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n" +
-                "Hue Dimmer switches***\n" +
-                "It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn " +
-                "a version of @bravenel's 'Button Controller+'."
-        }
-        section("Some of the included changes are:") {
-            paragraph "A complete revamp of the configuration flow. You can now tell at a glance, what has been configured for each button." +
-                "The button configuration page has been collapsed by default for easier navigation."
-            paragraph "The original apps were hardcoded to allow configuring 4 or 6 button devices." +
-                " This app will automatically detect the number of buttons on your device or allow you to manually" +
-                " specify (only needed if device does not report on its own)."
-            paragraph "Allows you to give your button device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down." +
-                "(***Standard Pico remotes can be converted to Audio Picos)\n\nThe additional control options have been highlighted below."
-        }
-        section("Available Control Options are:") {
-            paragraph "	Switches - Toggle \n" +
-                "	Switches - Turn On \n" +
-                "	Switches - Turn Off \n" +
-                "	Dimmers - Toggle \n" +
-                "	Dimmers - Set Level (Group 1) \n" +
-                "	Dimmers - Set Level (Group 2) \n" +
-                "	*Dimmers - Inc Level \n" +
-                "	*Dimmers - Dec Level \n" +
-                "	Fans - Low, Medium, High, Off \n" +
-                "	Shades - Up, Down, or Stop \n" +
-                "	Locks - Unlock Only \n" +
-                "	Speaker - Play/Pause \n" +
-                "	*Speaker - Next Track \n" +
-                "	*Speaker - Previous Track \n" +
-                "	*Speaker - Mute/Unmute \n" +
-                "	*Speaker - Volume Up \n" +
-                "	*Speaker - Volume Down \n" +
-                "	Set Modes \n" +
-                "	Run Routines \n" +
-                "	Sirens - Toggle \n" +
-                "	Push Notifications \n" +
-                "	SMS Notifications"
-        }
-       section("** Quirk for HS-WD100+ on Button 5 & 6:") {
-            paragraph "Because a dimmer switch already uses Press&Hold to manually set the dimming level" +
-                " please be aware of this operational behavior. If you only want to manually change" +
-                " the dim level to the lights that are wired to the switch, you will automatically" +
-                " trigger the 5/6 button event as well. And the same is true in reverse. If you" +
-                " only want to trigger a 5/6 button event action with Press&Hold, you will be manually" +
-                " changing the dim level of the switch simultaneously as well.\n" +
-                "This quirk doesn't exist of course with the HS-HS100+ since it is not a dimmer."
-        }
-        section("*** Lutron Pico Requirements:") {
-            paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager" +
-                " SmartApp are also required for this functionality!\nSearch the forums for details."
-        }
-        section("*** Hue Dimmer Switch:") {
-                  paragraph "Hue Dimmer switch will require a device type handler that reports button numbered 1-4 not on,up,down& off. use the DTH from \n" +
-                      " SmartThings-PS/SmartThings/hue-dimmer-switch-zha"
-              }
-        section("*** Inovelli Red Series:") {
-                          paragraph "Added support for Inovelli Red Series including config button (7)"
-                      }
+def text =
+    section("User's Guide - Advanced Button Controller") {
+        paragraph "This smart app allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n" +
+            "HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n" +
+            "Hue Dimmer switches***\n" +
+            "It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn " +
+            "a version of @bravenel's 'Button Controller+'."
+    }
+
+    section("Some of the included changes are:") {
+        paragraph "A complete revamp of the configuration flow. You can now tell at a glance, what has been configured for each button." +
+            "The button configuration page has been collapsed by default for easier navigation."
+        paragraph "The original apps were hardcoded to allow configuring 4 or 6 button devices. " +
+            "This app will automatically detect the number of buttons on your device or allow you to manually " +
+            "specify (only needed if device does not report on its own)."
+        paragraph "Allows you to give your button device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down." +
+            "(***Standard Pico remotes can be converted to Audio Picos)\n\nThe additional control options have been highlighted below."
+    }
+
+    section("Available Control Options are:") {
+        paragraph "	Switches - Toggle \n" +
+            "	Switches - Turn On \n" +
+            "	Switches - Turn Off \n" +
+            "	Dimmers - Toggle \n" +
+            "	Dimmers - Set Level (Group 1) \n" +
+            "	Dimmers - Set Level (Group 2) \n" +
+            "	*Dimmers - Inc Level \n" +
+            "	*Dimmers - Dec Level \n" +
+            "	Fans - Low, Medium, High, Off \n" +
+            "	Shades - Up, Down, or Stop \n" +
+            "	Locks - Unlock Only \n" +
+            "	Speaker - Play/Pause \n" +
+            "	*Speaker - Next Track \n" +
+            "	*Speaker - Previous Track \n" +
+            "	*Speaker - Mute/Unmute \n" +
+            "	*Speaker - Volume Up \n" +
+            "	*Speaker - Volume Down \n" +
+            "	Set Modes \n" +
+            "	Run Routines \n" +
+            "	Sirens - Toggle \n" +
+            "	Push Notifications \n" +
+            "	SMS Notifications \n" +
+            "	Off-On Reset "
+    }
+
+   section("** Quirk for HS-WD100+ on Button 5 & 6:") {
+        paragraph "Because a dimmer switch already uses Press&Hold to manually set the dimming level" +
+            " please be aware of this operational behavior. If you only want to manually change" +
+            " the dim level to the lights that are wired to the switch, you will automatically" +
+            " trigger the 5/6 button event as well. And the same is true in reverse. If you" +
+            " only want to trigger a 5/6 button event action with Press&Hold, you will be manually" +
+            " changing the dim level of the switch simultaneously as well.\n" +
+            "This quirk doesn't exist of course with the HS-HS100+ since it is not a dimmer."
+    }
+
+    section("*** Lutron Pico Requirements:") {
+        paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager" +
+            " SmartApp are also required for this functionality!\nSearch the forums for details."
+    }
+
+    section("*** Hue Dimmer Switch:") {
+        paragraph "Hue Dimmer switch will require a device type handler that reports button numbered 1-4 not on,up,down& off. use the DTH from \n" +
+            " SmartThings-PS/SmartThings/hue-dimmer-switch-zha"
+    }
+
+    section("*** Inovelli Red Series:") {
+        paragraph "Added support for Inovelli Red Series including config button (7)"
+    }
 }
 
 def getButtonType(buttonName) {
@@ -618,6 +643,7 @@ def getSpecText(currentButton) {
             case 5: return "Down Button"; break
         }
     }
+
     if (state.buttonType == "Hue Dimmer") {
         switch (state.currentButton) {
             case 1: return "On Button"; break
@@ -626,15 +652,16 @@ def getSpecText(currentButton) {
             case 4: return "Off Button"; break
         }
     }
+
     if (state.buttonType == "Cube Controller") {
         switch (state.currentButton) {
-           case 1: return "Shake Cube"; break
-           case 2: return "Flip Cube 90 Degrees"; break
-           case 3: return "Flip Cube 180 Degrees"; break
-           case 4: return "Slide Cube"; break
-           case 5: return "Knock Cube"; break
-           case 6: return "Rotate Cube Right"; break
-           case 7: return "Rotate Cube Left"; break
+            case 1: return "Shake Cube"; break
+            case 2: return "Flip Cube 90 Degrees"; break
+            case 3: return "Flip Cube 180 Degrees"; break
+            case 4: return "Slide Cube"; break
+            case 5: return "Knock Cube"; break
+            case 6: return "Rotate Cube Right"; break
+            case 7: return "Rotate Cube Left"; break
         }
     }
     if (state.buttonType == "Aeon Minimote") {
@@ -671,38 +698,38 @@ def getSpecText(currentButton) {
     }
 
     if (state.buttonType.contains("WD200+ Dimmer")) {
-           switch (state.currentButton) {
-               case 1: return "Double-Tap Upper Paddle"; break
-               case 2: return "Double-Tap Lower Paddle"; break
-               case 3: return "Triple-Tap Upper Paddle"; break
-               case 4: return "Triple-Tap Lower Paddle"; break
-               case 5: return "Press & Hold Upper Paddle\n(See user guide for quirks)"; break
-               case 6: return "Press & Hold Lower Paddle\n(See user guide for quirks)"; break
-               case 7: return "Single Tap Upper Paddle\n(See user guide for quirks)"; break
-               case 8: return "Single Tap Lower Paddle\n(See user guide for quirks)"; break
-               case 9: return "4X-Tap Upper Paddle"; break
-               case 10: return "4X-Tap Lower Paddle"; break
-               case 11: return "5X-Tap Upper Paddle"; break
-               case 12: return "5X-Tap Lower Paddle"; break
-           }
-       }
+        switch (state.currentButton) {
+            case 1: return "Double-Tap Upper Paddle"; break
+            case 2: return "Double-Tap Lower Paddle"; break
+            case 3: return "Triple-Tap Upper Paddle"; break
+            case 4: return "Triple-Tap Lower Paddle"; break
+            case 5: return "Press & Hold Upper Paddle\n(See user guide for quirks)"; break
+            case 6: return "Press & Hold Lower Paddle\n(See user guide for quirks)"; break
+            case 7: return "Single Tap Upper Paddle\n(See user guide for quirks)"; break
+            case 8: return "Single Tap Lower Paddle\n(See user guide for quirks)"; break
+            case 9: return "4X-Tap Upper Paddle"; break
+            case 10: return "4X-Tap Lower Paddle"; break
+            case 11: return "5X-Tap Upper Paddle"; break
+            case 12: return "5X-Tap Lower Paddle"; break
+        }
+    }
 
-        if (state.buttonType.contains("WS200+ Switch")) {
-               switch (state.currentButton) {
-                   case 1: return "Double-Tap Upper Paddle"; break
-                   case 2: return "Double-Tap Lower Paddle"; break
-                   case 3: return "Triple-Tap Upper Paddle"; break
-                   case 4: return "Triple-Tap Lower Paddle"; break
-                   case 5: return "Press & Hold Upper Paddle"; break
-                   case 6: return "Press & Hold Lower Paddle"; break
-                   case 7: return "Single Tap Upper Paddle"; break
-                   case 8: return "Single Tap Lower Paddle"; break
-                   case 9: return "4X-Tap Upper Paddle"; break
-                   case 10: return "4X-Tap Lower Paddle"; break
-                   case 11: return "5X-Tap Upper Paddle"; break
-                   case 12: return "5X-Tap Lower Paddle"; break
-               }
-           }
+    if (state.buttonType.contains("WS200+ Switch")) {
+        switch (state.currentButton) {
+            case 1: return "Double-Tap Upper Paddle"; break
+            case 2: return "Double-Tap Lower Paddle"; break
+            case 3: return "Triple-Tap Upper Paddle"; break
+            case 4: return "Triple-Tap Lower Paddle"; break
+            case 5: return "Press & Hold Upper Paddle"; break
+            case 6: return "Press & Hold Lower Paddle"; break
+            case 7: return "Single Tap Upper Paddle"; break
+            case 8: return "Single Tap Lower Paddle"; break
+            case 9: return "4X-Tap Upper Paddle"; break
+            case 10: return "4X-Tap Lower Paddle"; break
+            case 11: return "5X-Tap Upper Paddle"; break
+            case 12: return "5X-Tap Lower Paddle"; break
+        }
+    }
 
     if (state.buttonType.contains("Inovelli")) {
         switch (state.currentButton) {
@@ -737,38 +764,37 @@ def getSpecText(currentButton) {
         }
     }
 
-     if (state.buttonType.contains("Zen27")) {
-          switch (currentButton) {
-              case 1: return "1 x up"; break
-              case 2: return "1 x down"; break
-              case 3: return "2 x up"; break
-              case 4: return "2 x down"; break
-              case 5: return "3 x up"; break
-              case 6: return "3 x down"; break
-              case 7: return "4 x up"; break
-              case 8: return "4 x down"; break
-              case 9: return "5 x up"; break
-              case 10: return "5 x down"; break
-            }
-     }
+    if (state.buttonType.contains("Zen27")) {
+        switch (currentButton) {
+            case 1: return "1 x up"; break
+            case 2: return "1 x down"; break
+            case 3: return "2 x up"; break
+            case 4: return "2 x down"; break
+            case 5: return "3 x up"; break
+            case 6: return "3 x down"; break
+            case 7: return "4 x up"; break
+            case 8: return "4 x down"; break
+            case 9: return "5 x up"; break
+            case 10: return "5 x down"; break
+        }
+    }
 
     if (state.buttonType == "Ikea Button") {
-          if (state.buttonCount == 5) {
-              switch (state.currentButton) {
-                  case 1: return "Up Button"; break
-                  case 2: return "Right Button"; break
-                  case 3: return "Down Button"; break
-                  case 4: return "Left Button"; break
-                  case 5: return "Middle Button"; break
-              }
-          }
-          if (state.buttonCount == 2) {
-              switch (state.currentButton) {
-                  case 1: return "Up Button"; break
-                  case 2: return "Down Button"; break
-              }
-          }
-
+        if (state.buttonCount == 5) {
+            switch (state.currentButton) {
+                case 1: return "Up Button"; break
+                case 2: return "Right Button"; break
+                case 3: return "Down Button"; break
+                case 4: return "Left Button"; break
+                case 5: return "Middle Button"; break
+            }
+        }
+        if (state.buttonCount == 2) {
+            switch (state.currentButton) {
+                case 1: return "Up Button"; break
+                case 2: return "Down Button"; break
+            }
+        }
     }
     return "Not Specified By Device"
 }
