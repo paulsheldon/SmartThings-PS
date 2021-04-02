@@ -81,3 +81,32 @@ DTH also offers emulated "Three Axis" capability for easy usage in SmartApps lik
 * Device does not send any data if gesture is unrecognized - rotating the cube randomly in the air and placing it down will most likely not send any event.
 * The DTH will correct last known orientation and send missing flip/face activation events if needed as soon as it's gets the orientation data form the device.
 * Due to the above rotation and shake events can execute for wrong faces if the flip gestures are not performed correctly (like rotating the cube randomly in the air)
+
+## Installation
+To install the ABC Manager Smartapp 
+* Login to the Smartthings IDE at https://graph.api.smartthings.com/
+* Click My Locations and select your home location
+* Click My SmartApps
+* Click New SmartApp
+* Fill out the NAme, Namespace, Author and Description
+* Click From Code tab
+* Copy the raw code from the abc-manager.src file and paste in the From Code box
+* Click Create
+* Click Publish, For Me
+
+Next, ccreate the ABC Child Creator
+* Click My SmartApps
+* Click New SmartApp
+* Fill out the NAme, Namespace, Author and Description
+* Click From Code tab
+* Copy the raw code from the abc-child-creator.src file and paste in the From Code box
+* Click Create
+* DO NOT PUBLISH
+
+The app will not be available to add to your app.
+* Open the SmartThings app
+* Click the hamburger menu and select SmartApps
+* Click + to add an app
+* Scroll down to custom apps and select ABC Manager
+* Follow prompts to complete install
+
