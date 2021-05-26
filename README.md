@@ -38,7 +38,7 @@ This is an updated version **Hue Dimmer Switch** by Stephen McLaughlin ([See ori
 ## Lightify Bulb -ABC
 
 This is an updated version **Lightify Bulb ** by Scott Gibson ([See original repository here](https://github.com/digitalgecko/mySmartThings)))
-This has corrected ColourTemperature to work with ABC and a few other tweaks
+This has corrected colour temperature to work with ABC and a few other tweaks
 
 ## Zigbee Switch Power
 
@@ -54,7 +54,7 @@ _To pair your Aqara Cube Controller with SmartThings HUB follow the instructions
 
 This DTH offers 3 modes of operation (that can be changed in the settings):
 
-1. **Simple** (set by default)- designed for backwards compatibility with previous DTH - presents only 7 buttons for basic gestures like shake, 90 degree flip, 180 degree flip, slide, knock, rotate right and rotate left.
+1. **Simple** (set by default)- designed for backwards compatibility with the previous DTH - presents only 7 buttons for basic gestures like shake, 90-degree flip, 180-degree flip, slide, knock, rotate right and rotate left.
 2. **Advanced** - presents 36 buttons for maximum functionality. Buttons are assigned as follows:
  * buttons 1 to 6 - "push" event on face 0 to 5 activation (corresponds to face pointing up)
  * buttons 7 to 12 - "push" event on slide gesture with faces 0 to 5 pointing up
@@ -68,16 +68,45 @@ This DTH offers 3 modes of operation (that can be changed in the settings):
 
 **I recommend using the Advanced mode**
 
-DTH also offers emulated "Three Axis" capability for easy usage in SmartApps like Mood Cube. It is dependent on selected face and affected by limitation mentioned below.
+DTH also offers emulated "Three-Axis" capability for easy usage in SmartApps like Mood Cube. It is dependent on the selected face and affected by the limitation mentioned below.
 
 **_Due to limitations imposed by data sent by the hardware there are some things to keep in mind:_**
 
 * The device sends orientation only on those gestures:
- * 90 degree flip
- * 180 degree flip
+ * 90-degree flip
+ * 180-degree flip
  * slide
  * knock
-* Because of that orientation data for rotation and shake events is based on last know orientation.
-* Device does not send any data if gesture is unrecognized - rotating the cube randomly in the air and placing it down will most likely not send any event.
-* The DTH will correct last known orientation and send missing flip/face activation events if needed as soon as it's gets the orientation data form the device.
+* Because of that orientation data for rotation and shake events is based on the last know orientation.
+* Device does not send any data if a gesture is unrecognized - rotating the cube randomly in the air and placing it down will most likely not send any event.
+* The DTH will correct the last known orientation and send missing flip/face activation events if needed as soon as it's got the orientation data from the device.
 * Due to the above rotation and shake events can execute for wrong faces if the flip gestures are not performed correctly (like rotating the cube randomly in the air)
+
+## Installation
+To install the ABC Manager Smartapp 
+* Login to the Smartthings IDE at https://graph.api.smartthings.com/
+* Click My Locations and select your home location
+* Click My SmartApps
+* Click New SmartApp
+* Fill out the Name, Namespace, Author and Description
+* Click From Code tab
+* Copy the raw code from the abc-manager.src file and paste in the From Code box
+* Click Create
+* Click Publish, For Me
+
+Next, create the ABC Child Creator
+* Click My SmartApps
+* Click New SmartApp
+* Fill out the Name, Namespace, Author and Description
+* Click From Code tab
+* Copy the raw code from the abc-child-creator.src file and paste in the From Code box
+* Click Create
+* DO NOT PUBLISH
+
+The app will not be available to add to your app.
+* Open the SmartThings app
+* Click the hamburger menu and select SmartApps
+* Click + to add an app
+* Scroll down to custom apps and select ABC Manager
+* Follow prompts to complete install
+
