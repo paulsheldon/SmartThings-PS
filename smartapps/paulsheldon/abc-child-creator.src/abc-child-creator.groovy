@@ -27,11 +27,13 @@
  * 2020-05-05 Added support WS200 Dimmer & Switch
  *            Added support for Ikea Buttons provided by hyvamiesh
  *            Dimming lights does not switch light off provided by hyvamiesh
+ * 2020-05-12 Added option to see button function in device list
+ *            if information is available for button, if not available please raise issue in GitHub
  *
  *	DO NOT PUBLISH !!!!
  */
 
-def version(){"v1.200505"}
+def version() { "v1.200709" }
 
 definition(
         name: "ABC Child Creator",
@@ -71,9 +73,9 @@ def chooseButton() {
                 if (state.buttonCount < 1) {
                     paragraph "The selected button device did not report the number of buttons it has. Please specify in the Advanced Config section below."
                 } else {
-                    log.debug("Show Hardware Specs: ${showHWSpecs==true ? 'Yes' : 'No'}")
+                    log.debug("Show Hardware Specs: ${showHWSpecs == true ? 'Yes' : 'No'}")
                     for (i in 1..state.buttonCount) {
-                        href "configButtonsPage", title: "Button ${i}" + ((showHWSpecs==true && getSpecText(i)!= null) ?  "\n ${getSpecText(i)}" : ""), state: getDescription(i) != "Tap to configure" ? "complete" : null, description: getDescription(i), params: [pbutton: i]
+                        href "configButtonsPage", title: "Button ${i}" + ((showHWSpecs == true && getSpecText(i) != null) ? "\n ${getSpecText(i)}" : ""), state: getDescription(i) != "Tap to configure" ? "complete" : null, description: getDescription(i), params: [pbutton: i]
                     }
                 }
             }
@@ -109,14 +111,14 @@ def getButtonSections(buttonNumber) {
         def picNameNoSpace = "${state.buttonType}${state.currentButton}.png" - " " - " " - " " - "/" - "-"
         log.debug("Button Image Name: $picNameNoSpace")
         log.debug picNameNoSpace
-        log.debug("Show Button Image: ${showButtonImage==true ? 'Yes' : 'No'}")
-        if (showButtonImage == true){
-        section() {    //"Hardware specific info on button selection:") {
-             paragraph image: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/${picNameNoSpace}", "${getSpecText()}"
-        }
+        log.debug("Show Button Image: ${showButtonImage == true ? 'Yes' : 'No'}")
+        if (showButtonImage == true) {
+            section() {    //"Hardware specific info on button selection:") {
+                paragraph image: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/${picNameNoSpace}", "${getSpecText()}"
+            }
         }
         def myDetail
-        for (i in 1..20) {//Build 1st 20 Button Config Options
+        for (i in 1..21) {//Build 1st 21 Button Config Options
             myDetail = getPrefDetails().find { it.sOrder == i }
             section(hideable: true, hidden: !(shallHide("${myDetail.id}${buttonNumber}") || shallHide("${myDetail.sub}${buttonNumber}")), myDetail.secLabel) {
                 input "${myDetail.id}${buttonNumber}_pushed", myDetail.cap, title: "When Pushed", multiple: true, required: false, submitOnChange: collapseAll
@@ -165,7 +167,7 @@ def enableSpec() {
 }
 
 def showHeld() {
-    if (state.buttonType.contains("100+ ") || state.buttonType=="Cube Controller") return false
+    if (state.buttonType.contains("100+ ") || state.buttonType == "Cube Controller") return false
     else return true
 }
 
@@ -234,15 +236,15 @@ def defaultLabel() {
 }
 
 def getPrefDetails() {
-    def capPlayPause='capability.musicPlayer'
-    def capVolume='capability.musicPlayer'
-    def capTrack='capability.musicPlayer'
-    def capMute='capability.musicPlayer'
-    if (sonos == true ){
-      capPlayPause='capability.mediaPlayback'
-      capVolume='capability.audioVolume'
-      capTrack='capability.mediaTrackControl'
-      capMute='capability.audioMute'
+    def capPlayPause = 'capability.musicPlayer'
+    def capVolume = 'capability.musicPlayer'
+    def capTrack = 'capability.musicPlayer'
+    def capMute = 'capability.musicPlayer'
+    if (sonos == true) {
+        capPlayPause = 'capability.mediaPlayback'
+        capVolume = 'capability.audioVolume'
+        capTrack = 'capability.mediaTrackControl'
+        capMute = 'capability.audioMute'
     }
     def detailMappings =
             [[id: 'lightOn_', sOrder: 1, desc: 'Turn On ', comm: turnOn, type: 'normal', secLabel: 'Switches (Turn On)                                           ', cap: 'capability.switch'],
@@ -259,17 +261,19 @@ def getPrefDetails() {
              [id: 'speakervu_', sOrder: 12, desc: 'Volume +', comm: volumeUp, sub: 'valSpeakU', type: 'hasSub', secLabel: 'Speakers (Increase Vol By)                             ', cap: capVolume, sTitle: 'Increase by', sDesc: '0 to 15'],
              [id: 'speakervd_', sOrder: 13, desc: 'Volume -', comm: volumeDown, sub: 'valSpeakD', type: 'hasSub', secLabel: 'Speakers (Decrease Vol By)                           ', cap: capVolume, sTitle: 'Decrease by', sDesc: '0 to 15'],
              [id: 'speakernt_', sOrder: 14, desc: 'Next Track', comm: speakerNextTrack, type: 'normal', secLabel: 'Speakers (Go to Next Track)                           ', cap: capTrack],
-             [id: 'speakerpt_', sOrder:15, desc:'Previous Track', comm: speakerPreviousTrack, type:"normal", secLabel: 'Speakers (Go to Previous Track)                    ', cap: capTrack],
+             [id: 'speakerpt_', sOrder: 15, desc: 'Previous Track', comm: speakerPreviousTrack, type: "normal", secLabel: 'Speakers (Go to Previous Track)                    ', cap: capTrack],
              [id: 'speakermu_', sOrder: 16, desc: 'Mute', comm: speakerMute, type: 'normal', secLabel: 'Speakers (Toggle Mute-Unmute)                  ', cap: capMute],
              [id: 'sirens_', sOrder: 17, desc: 'Toggle', comm: toggle, type: 'normal', secLabel: 'Sirens (Toggle)                                                 ', cap: 'capability.alarm'],
              [id: 'locks_', sOrder: 18, desc: 'Lock', comm: setUnlock, type: 'normal', secLabel: 'Locks (Lock Only)                                             ', cap: 'capability.lock'],
              [id: 'fanAdjust_', sOrder: 19, desc: 'Adjust', comm: adjustFan, type: 'normal', secLabel: 'Fans (Adjust - Low, Medium, High, Off)         ', cap: 'capability.switchLevel'],
              [id: 'shadeAdjust_', sOrder: 20, desc: 'Adjust', comm: adjustShade, type: 'normal', secLabel: 'Shades (Adjust - Up, Down, or Stop)              ', cap: 'capability.doorControl'],
+             [id: 'offOnReset_', sOrder: 21, desc: 'Off/On Reset', comm: offOnReset, type: 'normal', secLabel: 'Switches (Reset Off/ON)                               ', cap: 'capability.switch'],
              [id: 'mode_', desc: 'Set Mode', comm: changeMode, type: 'normal'],
              [id: 'phrase_', desc: 'Run Routine', comm: runRout, type: 'normal'],
              [id: 'notifications_', desc: 'Send Push Notification', comm: messageHandle, sub: 'valNotify', type: 'bool'],
              [id: 'phone_', desc: 'Send SMS', comm: smsHandle, sub: 'notifications_', type: 'normal'],
              [id: 'container_', desc: 'Cycle Playlist', comm: cyclePL, type: 'normal'],
+
             ]
     return detailMappings
 }
@@ -309,6 +313,7 @@ def turnDim(devices, level) {
 /*
     Fan
 */
+
 def adjustFan(device) {
     log.debug "Adjusting: $device"
     def currentLevel = device.currentLevel
@@ -322,6 +327,7 @@ def adjustFan(device) {
 /*
     Shade
 */
+
 def adjustShade(device) {
     log.debug "Shades: $device = ${device.currentMotor} state.lastUP = $state.lastshadesUp"
     if (device.currentMotor in ["up", "down"]) {
@@ -338,10 +344,11 @@ def adjustShade(device) {
 /*
     Speaker Functions
 */
+
 def speakerPlayState(device) {
-	log.debug "Toggling Play/Pause: $device"
-	if (sonos == true )	device.currentValue('playbackStatus').contains('playing')? device.pause() : device.play()
-	else device.currentValue('status').contains('playing') ? device.pause() : device.play()
+    log.debug "Toggling Play/Pause: $device"
+    if (sonos == true) device.currentValue('playbackStatus').contains('playing') ? device.pause() : device.play()
+    else device.currentValue('status').contains('playing') ? device.pause() : device.play()
 }
 
 def speakerNextTrack(device) {
@@ -350,8 +357,8 @@ def speakerNextTrack(device) {
 }
 
 def speakerPreviousTrack(device) {
-	log.debug "Previous Track Sent to: $device"
-	device.previousTrack()
+    log.debug "Previous Track Sent to: $device"
+    device.previousTrack()
 }
 
 def speakerMute(device) {
@@ -362,13 +369,14 @@ def speakerMute(device) {
 /*
     Volume Control Functions
 */
+
 def volumeUp(device, incLevel) {
     log.debug "Incrementing Volume by +$incLevel: $device"
     def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0]
     //currentLevel return a list...[0] is first item in list ie volume level
     def newVolume = currentVolume.toInteger() + incLevel
-    if (newVolume>100) newVolume=100
-    if (sonos == true )	device.setVolume(newVolume)
+    if (newVolume > 100) newVolume = 100
+    if (sonos == true) device.setVolume(newVolume)
     else device.setLevel(newVolume)
     log.debug "Volume increased by $incLevel to $newVolume"
 }
@@ -377,8 +385,8 @@ def volumeDown(device, decLevel) {
     log.debug "Decrementing Volume by -$decLevel: $device"
     def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0]
     def newVolume = currentVolume.toInteger() - decLevel
-    if (newVolume<0) newVolume=0
-    if (sonos == true ) device.setVolume(newVolume)
+    if (newVolume < 0) newVolume = 0
+    if (sonos == true) device.setVolume(newVolume)
     else device.setLevel(newVolume)
     log.debug "Volume decreased by $decLevel to $newVolume"
 }
@@ -386,6 +394,7 @@ def volumeDown(device, decLevel) {
 /*
     Colour Functions
 */
+
 def colourTempUp(device, incTemp) {
     log.debug "Incrementing Colour Temp: $device"
     def currentTemp = device.currentValue('colorTemperature')[0]
@@ -402,17 +411,17 @@ def colourTempDown(device, decTemp) {
     def newTemp = currentTemp - decTemp < 2200 ? 2200 : currentTemp - decTemp
     device.setColorTemperature(newTemp)
     def colorTempName = colourTempName(newTemp)
-      sendEvent(name: "colorName", value: colorTempName)
+    sendEvent(name: "colorName", value: colorTempName)
     log.debug "Colour Temp Changed to $colorTempName"
 }
 
 private colourTempName(value) {
     if (value != null) {
-       if (value <2500) return "Warm Glow"
-       else if (value <3000) return "Warm White"
-       else if (value < 5000) return "Cool White"
-       else if (value < 6000)  return "Daylight"
-       else return "Cool Daylight"
+        if (value < 2500) return "Warm Glow"
+        else if (value < 3000) return "Warm White"
+        else if (value < 5000) return "Cool White"
+        else if (value < 6000) return "Daylight"
+        else return "Cool Daylight"
     }
     return "White"
 }
@@ -422,7 +431,7 @@ def levelUp(device, incLevel) {
     def currentLevel = device.currentValue('level')[0]
     //currentLevel return a list...[0] is first item in list ie volume level
     def newLevel = currentLevel.toInteger() + incLevel
-    if (newLevel>100) newLevel=100
+    if (newLevel > 100) newLevel = 100
     device.setLevel(newLevel)
     log.debug "Level increased by $incLevel to $newLevel"
 }
@@ -431,7 +440,7 @@ def levelDown(device, decLevel) {
     log.debug "Decrementing Level by -$decLevel: $device"
     def currentLevel = device.currentValue('level')[0]
     def newLevel = currentLevel.toInteger() - decLevel
-    if (newLevel<1) newLevel=1 //Disable turning off light by dimming too low.
+    if (newLevel < 1) newLevel = 1 //Disable turning off light by dimming too low.
     device.setLevel(newLevel)
     log.debug "Level decreased by $decLevel to $newLevel"
 }
@@ -447,6 +456,18 @@ def toggle(devices) {
     else if (devices*.currentValue('switch').contains('off')) devices.on()
     else if (devices*.currentValue('alarm').contains('off')) devices.siren()
     else devices.on()
+}
+
+def offOnReset(devices) {
+    log.debug "Off/On Reset: $devices"
+    if (devices*.currentValue('switch').contains('on')) {
+        devices.off()
+        devices.on()
+    } else {
+        devices.on()
+        devices.off()
+        devices.on()
+    }
 }
 
 def dimToggle(devices, dimLevel) {
@@ -537,24 +558,26 @@ private timeIntervalLabel() {
 
 private def textHelp() {
     def text =
-        section("User's Guide - Advanced Button Controller") {
-            paragraph "This smart app allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n" +
-                "HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n" +
-                "Hue Dimmer switches***\n" +
-                "It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn " +
-                "a version of @bravenel's 'Button Controller+'."
-        }
-        section("Some of the included changes are:") {
-            paragraph "A complete revamp of the configuration flow. You can now tell at a glance, what has been configured for each button." +
+            section("User's Guide - Advanced Button Controller") {
+                paragraph "This smart app allows you to use a device with buttons including, but not limited to:\n\n  Aeon Labs Minimotes\n" +
+                        "HomeSeer HS-WD100+ switches**\n  HomeSeer HS-WS100+ switches\n  Lutron Picos***\n" +
+                        "Hue Dimmer switches***\n" +
+                        "It is a heavily modified version of @dalec's 'Button Controller Plus' which is in turn " +
+                        "a version of @bravenel's 'Button Controller+'."
+            }
+
+    section("Some of the included changes are:") {
+        paragraph "A complete revamp of the configuration flow. You can now tell at a glance, what has been configured for each button." +
                 "The button configuration page has been collapsed by default for easier navigation."
-            paragraph "The original apps were hardcoded to allow configuring 4 or 6 button devices." +
-                " This app will automatically detect the number of buttons on your device or allow you to manually" +
-                " specify (only needed if device does not report on its own)."
-            paragraph "Allows you to give your button device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down." +
+        paragraph "The original apps were hardcoded to allow configuring 4 or 6 button devices. " +
+                "This app will automatically detect the number of buttons on your device or allow you to manually " +
+                "specify (only needed if device does not report on its own)."
+        paragraph "Allows you to give your button device full speaker control including: Play/Pause, NextTrack, Mute, VolumeUp/Down." +
                 "(***Standard Pico remotes can be converted to Audio Picos)\n\nThe additional control options have been highlighted below."
-        }
-        section("Available Control Options are:") {
-            paragraph "	Switches - Toggle \n" +
+    }
+
+    section("Available Control Options are:") {
+        paragraph "	Switches - Toggle \n" +
                 "	Switches - Turn On \n" +
                 "	Switches - Turn Off \n" +
                 "	Dimmers - Toggle \n" +
@@ -575,28 +598,33 @@ private def textHelp() {
                 "	Run Routines \n" +
                 "	Sirens - Toggle \n" +
                 "	Push Notifications \n" +
-                "	SMS Notifications"
-        }
-       section("** Quirk for HS-WD100+ on Button 5 & 6:") {
-            paragraph "Because a dimmer switch already uses Press&Hold to manually set the dimming level" +
+                "	SMS Notifications \n" +
+                "	Off-On Reset "
+    }
+
+    section("** Quirk for HS-WD100+ on Button 5 & 6:") {
+        paragraph "Because a dimmer switch already uses Press&Hold to manually set the dimming level" +
                 " please be aware of this operational behavior. If you only want to manually change" +
                 " the dim level to the lights that are wired to the switch, you will automatically" +
                 " trigger the 5/6 button event as well. And the same is true in reverse. If you" +
                 " only want to trigger a 5/6 button event action with Press&Hold, you will be manually" +
                 " changing the dim level of the switch simultaneously as well.\n" +
                 "This quirk doesn't exist of course with the HS-HS100+ since it is not a dimmer."
-        }
-        section("*** Lutron Pico Requirements:") {
-            paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager" +
+    }
+
+    section("*** Lutron Pico Requirements:") {
+        paragraph "Lutron Picos are not natively supported by SmartThings. A Lutron SmartBridge Pro, a device running @njschwartz's python script (or node.js) and the Lutron Caseta Service Manager" +
                 " SmartApp are also required for this functionality!\nSearch the forums for details."
-        }
-        section("*** Hue Dimmer Switch:") {
-                  paragraph "Hue Dimmer switch will require a device type handler that reports button numbered 1-4 not on,up,down& off. use the DTH from \n" +
-                      " SmartThings-PS/SmartThings/hue-dimmer-switch-zha"
-              }
-        section("*** Inovelli Red Series:") {
-                          paragraph "Added support for Inovelli Red Series including config button (7)"
-                      }
+    }
+
+    section("*** Hue Dimmer Switch:") {
+        paragraph "Hue Dimmer switch will require a device type handler that reports button numbered 1-4 not on,up,down& off. use the DTH from \n" +
+                " SmartThings-PS/SmartThings/hue-dimmer-switch-zha"
+    }
+
+    section("*** Inovelli Red Series:") {
+        paragraph "Added support for Inovelli Red Series including config button (7)"
+    }
 }
 
 def getButtonType(buttonName) {
@@ -608,7 +636,7 @@ def getButtonType(buttonName) {
 }
 
 def getSpecText(currentButton) {
-    currentButton=(currentButton==null ? state.currentButton : currentButton)
+    currentButton = (currentButton == null ? state.currentButton : currentButton)
     if (state.buttonType == "Lutron Pico") {
         switch (state.currentButton) {
             case 1: return "Top Button"; break
@@ -618,6 +646,7 @@ def getSpecText(currentButton) {
             case 5: return "Down Button"; break
         }
     }
+
     if (state.buttonType == "Hue Dimmer") {
         switch (state.currentButton) {
             case 1: return "On Button"; break
@@ -626,15 +655,16 @@ def getSpecText(currentButton) {
             case 4: return "Off Button"; break
         }
     }
+
     if (state.buttonType == "Cube Controller") {
         switch (state.currentButton) {
-           case 1: return "Shake Cube"; break
-           case 2: return "Flip Cube 90 Degrees"; break
-           case 3: return "Flip Cube 180 Degrees"; break
-           case 4: return "Slide Cube"; break
-           case 5: return "Knock Cube"; break
-           case 6: return "Rotate Cube Right"; break
-           case 7: return "Rotate Cube Left"; break
+            case 1: return "Shake Cube"; break
+            case 2: return "Flip Cube 90 Degrees"; break
+            case 3: return "Flip Cube 180 Degrees"; break
+            case 4: return "Slide Cube"; break
+            case 5: return "Knock Cube"; break
+            case 6: return "Rotate Cube Right"; break
+            case 7: return "Rotate Cube Left"; break
         }
     }
     if (state.buttonType == "Aeon Minimote") {
@@ -671,38 +701,38 @@ def getSpecText(currentButton) {
     }
 
     if (state.buttonType.contains("WD200+ Dimmer")) {
-           switch (state.currentButton) {
-               case 1: return "Double-Tap Upper Paddle"; break
-               case 2: return "Double-Tap Lower Paddle"; break
-               case 3: return "Triple-Tap Upper Paddle"; break
-               case 4: return "Triple-Tap Lower Paddle"; break
-               case 5: return "Press & Hold Upper Paddle\n(See user guide for quirks)"; break
-               case 6: return "Press & Hold Lower Paddle\n(See user guide for quirks)"; break
-               case 7: return "Single Tap Upper Paddle\n(See user guide for quirks)"; break
-               case 8: return "Single Tap Lower Paddle\n(See user guide for quirks)"; break
-               case 9: return "4X-Tap Upper Paddle"; break
-               case 10: return "4X-Tap Lower Paddle"; break
-               case 11: return "5X-Tap Upper Paddle"; break
-               case 12: return "5X-Tap Lower Paddle"; break
-           }
-       }
+        switch (state.currentButton) {
+            case 1: return "Double-Tap Upper Paddle"; break
+            case 2: return "Double-Tap Lower Paddle"; break
+            case 3: return "Triple-Tap Upper Paddle"; break
+            case 4: return "Triple-Tap Lower Paddle"; break
+            case 5: return "Press & Hold Upper Paddle\n(See user guide for quirks)"; break
+            case 6: return "Press & Hold Lower Paddle\n(See user guide for quirks)"; break
+            case 7: return "Single Tap Upper Paddle\n(See user guide for quirks)"; break
+            case 8: return "Single Tap Lower Paddle\n(See user guide for quirks)"; break
+            case 9: return "4X-Tap Upper Paddle"; break
+            case 10: return "4X-Tap Lower Paddle"; break
+            case 11: return "5X-Tap Upper Paddle"; break
+            case 12: return "5X-Tap Lower Paddle"; break
+        }
+    }
 
-        if (state.buttonType.contains("WS200+ Switch")) {
-               switch (state.currentButton) {
-                   case 1: return "Double-Tap Upper Paddle"; break
-                   case 2: return "Double-Tap Lower Paddle"; break
-                   case 3: return "Triple-Tap Upper Paddle"; break
-                   case 4: return "Triple-Tap Lower Paddle"; break
-                   case 5: return "Press & Hold Upper Paddle"; break
-                   case 6: return "Press & Hold Lower Paddle"; break
-                   case 7: return "Single Tap Upper Paddle"; break
-                   case 8: return "Single Tap Lower Paddle"; break
-                   case 9: return "4X-Tap Upper Paddle"; break
-                   case 10: return "4X-Tap Lower Paddle"; break
-                   case 11: return "5X-Tap Upper Paddle"; break
-                   case 12: return "5X-Tap Lower Paddle"; break
-               }
-           }
+    if (state.buttonType.contains("WS200+ Switch")) {
+        switch (state.currentButton) {
+            case 1: return "Double-Tap Upper Paddle"; break
+            case 2: return "Double-Tap Lower Paddle"; break
+            case 3: return "Triple-Tap Upper Paddle"; break
+            case 4: return "Triple-Tap Lower Paddle"; break
+            case 5: return "Press & Hold Upper Paddle"; break
+            case 6: return "Press & Hold Lower Paddle"; break
+            case 7: return "Single Tap Upper Paddle"; break
+            case 8: return "Single Tap Lower Paddle"; break
+            case 9: return "4X-Tap Upper Paddle"; break
+            case 10: return "4X-Tap Lower Paddle"; break
+            case 11: return "5X-Tap Upper Paddle"; break
+            case 12: return "5X-Tap Lower Paddle"; break
+        }
+    }
 
     if (state.buttonType.contains("Inovelli")) {
         switch (state.currentButton) {
@@ -712,7 +742,9 @@ def getSpecText(currentButton) {
             case 4: return "4X Tap Upper Paddle = Pushed\n4X Tap Lower Paddle = Held"; break
             case 5: return "5X Tap Upper Paddle = Pushed\n5X Tap Lower Paddle = Held"; break
             case 6: return "Hold Upper Paddle = Pushed\nHold Lower Paddle = Held"; break
-            case 7: if (state.buttonType.contains("Red")) { return "1x Tap Config Button"; break; }
+            case 7: if (state.buttonType.contains("Red")) {
+                return "1x Tap Config Button"; break;
+            }
         }
     }
 
@@ -737,38 +769,37 @@ def getSpecText(currentButton) {
         }
     }
 
-     if (state.buttonType.contains("Zen27")) {
-          switch (currentButton) {
-              case 1: return "1 x up"; break
-              case 2: return "1 x down"; break
-              case 3: return "2 x up"; break
-              case 4: return "2 x down"; break
-              case 5: return "3 x up"; break
-              case 6: return "3 x down"; break
-              case 7: return "4 x up"; break
-              case 8: return "4 x down"; break
-              case 9: return "5 x up"; break
-              case 10: return "5 x down"; break
-            }
-     }
+    if (state.buttonType.contains("Zen27")) {
+        switch (currentButton) {
+            case 1: return "1 x up"; break
+            case 2: return "1 x down"; break
+            case 3: return "2 x up"; break
+            case 4: return "2 x down"; break
+            case 5: return "3 x up"; break
+            case 6: return "3 x down"; break
+            case 7: return "4 x up"; break
+            case 8: return "4 x down"; break
+            case 9: return "5 x up"; break
+            case 10: return "5 x down"; break
+        }
+    }
 
     if (state.buttonType == "Ikea Button") {
-          if (state.buttonCount == 5) {
-              switch (state.currentButton) {
-                  case 1: return "Up Button"; break
-                  case 2: return "Right Button"; break
-                  case 3: return "Down Button"; break
-                  case 4: return "Left Button"; break
-                  case 5: return "Middle Button"; break
-              }
-          }
-          if (state.buttonCount == 2) {
-              switch (state.currentButton) {
-                  case 1: return "Up Button"; break
-                  case 2: return "Down Button"; break
-              }
-          }
-
+        if (state.buttonCount == 5) {
+            switch (state.currentButton) {
+                case 1: return "Up Button"; break
+                case 2: return "Right Button"; break
+                case 3: return "Down Button"; break
+                case 4: return "Left Button"; break
+                case 5: return "Middle Button"; break
+            }
+        }
+        if (state.buttonCount == 2) {
+            switch (state.currentButton) {
+                case 1: return "Up Button"; break
+                case 2: return "Down Button"; break
+            }
+        }
     }
     return "Not Specified By Device"
 }
