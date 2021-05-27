@@ -103,7 +103,7 @@ Next, create the ABC Child Creator
 * Click Create
 * DO NOT PUBLISH
 
-The app will not be available to add to your app.
+The app will now be available to add to your app.
 * Open the SmartThings app
 * Click the hamburger menu and select SmartApps
 * Click + to add an app
