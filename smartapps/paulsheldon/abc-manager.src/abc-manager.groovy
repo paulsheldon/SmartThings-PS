@@ -21,19 +21,37 @@
 definition(
     name: "ABC Manager",
     namespace: "paulsheldon",
-    singleInstance: true,
-    author: "Stephan Hackett / Paul Sheldon",
-    description: "Configure devices with buttons like the Aeon Labs Minimote, Lutron Pico Remotes, Philips Hue Dimmer, Inovelli. Sonos added",
+    author: "Paul Sheldon",
+    description: "Advanced Button Controller",
     category: "My Apps",
     iconUrl: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
     iconX2Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
     iconX3Url: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
+    singleInstance: true,
 )
 
 preferences {
     page(name: "mainPage", title: "ABC Controller Mappings", install: true, uninstall: true,)
     page(name: "aboutPage",title: "About ABC Manager")
 }
+
+/**********************************************************************
+ *  Setup and Configuration Commands:
+ **********************************************************************/
+
+def installed() {
+    log.debug "${app.label}: Installed"
+}
+
+def uninstalled(){
+    log.debug "${app.label}: Uninstalled"
+}
+
+def updated() {
+    log.debug "${app.label}: Updated"
+    unsubscribe()
+}
+
 
 def mainPage() {
     dynamicPage(name: "mainPage") {
@@ -49,7 +67,7 @@ def mainPage() {
         section("Version Info, User's Guide") {
             href (name: "aboutPage",
                   title: "Advanced Button Controller \n"+childVer,
-                  description: "Tap to get Smart app Info and User's Guide.",
+                  description: "Tap to get Smart App Info and User's Guide.",
                   image: verImgCheck(childVer),
                   required: false, // check repo for image that matches current version. Displays update icon if missing
                   page: "aboutPage"
@@ -98,17 +116,17 @@ def aboutPage() {
                 "	Dimmers - Set Level (Group 2) \n"+
                 "	Dimmers - Inc Level \n"+
                 "	Dimmers - Dec Level \n"+
-                "	##Color Temperature - Inc Level \n"+
-                "	##Color Temperature - Dec Level \n"+
+                "	Color Temperature - Inc Level \n"+
+                "	Color Temperature - Dec Level \n"+
                 "	Fans - Low, Medium, High, Off \n"+
                 "	Shades - Up, Down, or Stop \n"+
                 "	Locks - Unlock Only \n"+
                 "	Speaker - Play/Pause \n"+
-                "	#Speaker - Next Track \n"+
-                "	#Speaker - Previous Track \n"+
-                "	#Speaker - Mute/Unmute \n"+
-                "	#Speaker - Volume Up \n"+
-                "	#Speaker - Volume Down \n"+
+                "	Speaker - Next Track \n"+
+                "	Speaker - Previous Track \n"+
+                "	Speaker - Mute/Unmute \n"+
+                "	Speaker - Volume Up \n"+
+                "	Speaker - Volume Down \n"+
                 "	Set Modes \n"+
                 "	Run Routines \n"+
                 "	Sirens - Toggle \n"+
@@ -152,16 +170,4 @@ def verImgCheck(childVer){
     	log.error "ABC does not appear to be the latest version: Please update from IDE ${childVer}"
     	return "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/update.png"
 	}
-}
-
-def installed() {
-    initialize()
-}
-
-def updated() {
-    unsubscribe()
-    initialize()
-}
-
-def initialize() {
 }
