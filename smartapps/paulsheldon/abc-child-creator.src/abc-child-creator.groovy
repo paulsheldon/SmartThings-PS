@@ -33,7 +33,7 @@
  *	DO NOT PUBLISH !!!!
  */
 
-def version() { "v1.210111" }
+def version() { "v1.210601" }
 
 definition(
         name: "ABC Child Creator",
@@ -252,43 +252,43 @@ def getPrefDetails() {
     def detailMappings =
             [
              // Lights
-             [id: 'lightOn_',           sOrder: 1,  desc: 'Turn On ',           comm: lightOn,                                 type: 'normal',  secLabel: 'Switches (Turn On)',             cap: 'capability.switch'],
-             [id: 'lightOff_',          sOrder: 2,  desc: 'Turn Off',           comm: lightOff,                                type: 'normal',  secLabel: 'Switches (Turn Off)',            cap: 'capability.switch'],
-             [id: 'lights_',            sOrder: 3,  desc: 'Toggle On/Off',      comm: lightToggle,                             type: 'normal',  secLabel: 'Switches (Toggle On/Off)',       cap: 'capability.switch'],
-             [id: 'lightDim_',          sOrder: 4,  desc: 'Dim to ',            comm: lightDim,            sub: 'lightDim_',   type: 'hasSub',  secLabel: 'Dimmers (On to Level - Grp 1)',  cap: 'capability.switchLevel',      sTitle: 'Bright Level', sDesc: '0 to 100%'],
-             [id: 'lightD2m_',          sOrder: 5,  desc: 'Dim to ',            comm: lightDim,            sub: 'lightDim2_',  type: 'hasSub',  secLabel: 'Dimmers (On to Level - Grp 2)',  cap: 'capability.switchLevel',      sTitle: 'Bright Level', sDesc: '0 to 100%'],
-             [id: 'dimPlus_',           sOrder: 6,  desc: 'Brightness +',       comm: lightDimUp,          sub: 'lightDimP_',  type: 'hasSub',  secLabel: 'Dimmers (Increase Level By)',    cap: 'capability.switchLevel',      sTitle: 'Increase by',  sDesc: '0 to 15'],
-             [id: 'dimMinus_',          sOrder: 7,  desc: 'Brightness -',       comm: lightDimDown,        sub: 'lightDimM_',  type: 'hasSub',  secLabel: 'Dimmers (Decrease Level By)',    cap: 'capability.switchLevel',      sTitle: 'Decrease by',  sDesc: '0 to 15'],
-             [id: 'lightsDT_',          sOrder: 8,  desc: 'Turn Off/Dim',       comm: lightDimOff,         sub: 'lightDimT_',  type: 'hasSub',  secLabel: 'Dimmers (Turn Off/Dim to)',      cap: 'capability.switchLevel',      sTitle: 'Bright Level', sDesc: '0 to 100%'],
+             [id: 'lightOn_',           sOrder: 1,  desc: 'Turn On ',           comm: lightOn,                                      type: 'normal',  secLabel: 'Switches (Turn On)',             cap: 'capability.switch'],
+             [id: 'lightOff_',          sOrder: 2,  desc: 'Turn Off',           comm: lightOff,                                     type: 'normal',  secLabel: 'Switches (Turn Off)',            cap: 'capability.switch'],
+             [id: 'lights_',            sOrder: 3,  desc: 'Toggle On/Off',      comm: lightToggle,                                  type: 'normal',  secLabel: 'Switches (Toggle On/Off)',       cap: 'capability.switch'],
+             [id: 'lightDim_',          sOrder: 4,  desc: 'Dim to ',            comm: lightDim,               sub: 'lightDim_',     type: 'hasSub',  secLabel: 'Dimmers (On to Level - Grp 1)',  cap: 'capability.switchLevel',      sTitle: 'Bright Level', sDesc: '0 to 100%'],
+             [id: 'lightD2m_',          sOrder: 5,  desc: 'Dim to ',            comm: lightDim,               sub: 'lightDim2_',    type: 'hasSub',  secLabel: 'Dimmers (On to Level - Grp 2)',  cap: 'capability.switchLevel',      sTitle: 'Bright Level', sDesc: '0 to 100%'],
+             [id: 'dimPlus_',           sOrder: 6,  desc: 'Brightness +',       comm: lightDimUp,             sub: 'lightDimP_',    type: 'hasSub',  secLabel: 'Dimmers (Increase Level By)',    cap: 'capability.switchLevel',      sTitle: 'Increase by',  sDesc: '0 to 15'],
+             [id: 'dimMinus_',          sOrder: 7,  desc: 'Brightness -',       comm: lightDimDown,           sub: 'lightDimM_',    type: 'hasSub',  secLabel: 'Dimmers (Decrease Level By)',    cap: 'capability.switchLevel',      sTitle: 'Decrease by',  sDesc: '0 to 15'],
+             [id: 'lightsDT_',          sOrder: 8,  desc: 'Turn Off/Dim',       comm: lightDimOff,            sub: 'lightDimT_',    type: 'hasSub',  secLabel: 'Dimmers (Turn Off/Dim to)',      cap: 'capability.switchLevel',      sTitle: 'Bright Level', sDesc: '0 to 100%'],
              // Colour Temperatures
-             [id: 'colourTempUp_',      sOrder: 9,  desc: 'Colour Temp Up ',    comm: colourTempUp,        sub: 'colTempU_',   type: 'hasSub',  secLabel: 'Light Colour Temp (Inc By)',     cap: 'capability.colorTemperature', sTitle: 'Increase by',  sDesc: '100 to 1000'],
-             [id: 'colourTempDown_',    sOrder: 10, desc: 'Colour Temp Down ',  comm: colourTempDown,      sub: 'colTempD_',   type: 'hasSub',  secLabel: 'Light Colour Temp (Dec By)',     cap: 'capability.colorTemperature', sTitle: 'Decrease by',  sDesc: '100 to 1000'],
+             [id: 'colourTempUp_',      sOrder: 9,  desc: 'Colour Temp Up ',    comm: colourTempUp,           sub: 'colTempU_',     type: 'hasSub',  secLabel: 'Light Colour Temp (Inc By)',     cap: 'capability.colorTemperature', sTitle: 'Increase by',  sDesc: '100 to 1000'],
+             [id: 'colourTempDown_',    sOrder: 10, desc: 'Colour Temp Down ',  comm: colourTempDown,         sub: 'colTempD_',     type: 'hasSub',  secLabel: 'Light Colour Temp (Dec By)',     cap: 'capability.colorTemperature', sTitle: 'Decrease by',  sDesc: '100 to 1000'],
              // Speakers
-             [id: 'speakerpp_',         sOrder: 11, desc: 'Play/Pause',         comm: speakerPlayPause,                        type: 'normal',  secLabel: 'Speakers (Toggle Play-Pause)',   cap: capPlayPause],
-             [id: 'speakernt_',         sOrder: 12, desc: 'Next Track',         comm: speakerNextTrack,                        type: 'normal',  secLabel: 'Speakers (Go to Next Track)',    cap: capTrack],
-             [id: 'speakerpt_',         sOrder: 13, desc: 'Previous Track',     comm: speakerPreviousTrack,                    type: "normal",  secLabel: 'Speakers (Go to Prev Track)',    cap: capTrack],
-             [id: 'speakervu_',         sOrder: 14, desc: 'Volume +',           comm: speakerVolUp,        sub: 'speakVolU_',  type: 'hasSub',  secLabel: 'Speakers (Increase Vol By)',     cap: capVolume,                     sTitle: 'Increase by',  sDesc: '0 to 15'],
-             [id: 'speakervd_',         sOrder: 15, desc: 'Volume -',           comm: speakerVolDown,      sub: 'speakVolD_',  type: 'hasSub',  secLabel: 'Speakers (Decrease Vol By)',     cap: capVolume,                     sTitle: 'Decrease by',  sDesc: '0 to 15'],
-             [id: 'speakermu_',         sOrder: 16, desc: 'Mute',               comm: speakerMute,                             type: 'normal',  secLabel: 'Speakers (Toggle Mute-Unmute)',  cap: capMute],
+             [id: 'speakerpp_',         sOrder: 11, desc: 'Play/Pause',         comm: speakerPlayPause,                             type: 'normal',  secLabel: 'Speakers (Toggle Play-Pause)',   cap: capPlayPause],
+             [id: 'speakernt_',         sOrder: 12, desc: 'Next Track',         comm: speakerNextTrack,                             type: 'normal',  secLabel: 'Speakers (Go to Next Track)',    cap: capTrack],
+             [id: 'speakerpt_',         sOrder: 13, desc: 'Previous Track',     comm: speakerPreviousTrack,                         type: "normal",  secLabel: 'Speakers (Go to Prev Track)',    cap: capTrack],
+             [id: 'speakervu_',         sOrder: 14, desc: 'Volume +',           comm: speakerVolumeUp,        sub: 'speakVolU_',    type: 'hasSub',  secLabel: 'Speakers (Increase Vol By)',     cap: capVolume,                     sTitle: 'Increase by',  sDesc: '0 to 15'],
+             [id: 'speakervd_',         sOrder: 15, desc: 'Volume -',           comm: speakerVolumeDown,      sub: 'speakVolD_',    type: 'hasSub',  secLabel: 'Speakers (Decrease Vol By)',     cap: capVolume,                     sTitle: 'Decrease by',  sDesc: '0 to 15'],
+             [id: 'speakermu_',         sOrder: 16, desc: 'Mute',               comm: speakerMute,                                  type: 'normal',  secLabel: 'Speakers (Toggle Mute-Unmute)',  cap: capMute],
              // Sirens
-             [id: 'sirens_',            sOrder: 17, desc: 'Toggle',             comm: toggle,                                  type: 'normal',  secLabel: 'Sirens (Toggle)',                cap: 'capability.alarm'],
+             [id: 'sirens_',            sOrder: 17, desc: 'Toggle',             comm: sirenToggle,                                  type: 'normal',  secLabel: 'Sirens (Toggle)',                cap: 'capability.alarm'],
              // Locks
-             [id: 'locksLock_',         sOrder: 18, desc: 'Lock',               comm: lock,                                    type: 'normal',  secLabel: 'Locks (Lock)',                   cap: 'capability.lock'],
-             [id: 'locksUnlock_',       sOrder: 19, desc: 'Unlock',             comm: unlock,                                  type: 'normal',  secLabel: 'Locks (Unlock)',                 cap: 'capability.lock'],
-             [id: 'locksToggle_',       sOrder: 20, desc: 'Toggle Lock',        comm: lockToggle,                              type: 'normal',  secLabel: 'Locks (Toggle)',                 cap: 'capability.lock'],
+             [id: 'locksLock_',         sOrder: 18, desc: 'Lock',               comm: lockLock`,                                    type: 'normal',  secLabel: 'Locks (Lock)',                   cap: 'capability.lock'],
+             [id: 'locksUnlock_',       sOrder: 19, desc: 'Unlock',             comm: lockUnlock,                                   type: 'normal',  secLabel: 'Locks (Unlock)',                 cap: 'capability.lock'],
+             [id: 'locksToggle_',       sOrder: 20, desc: 'Toggle Lock',        comm: lockToggle,                                   type: 'normal',  secLabel: 'Locks (Toggle)',                 cap: 'capability.lock'],
              // Fans
-             [id: 'fanAdjust_',         sOrder: 21, desc: 'Adjust',             comm: adjustFan,                               type: 'normal',  secLabel: 'Fans (Low, Medium, High, Off)',  cap: 'capability.switchLevel'],
+             [id: 'fanAdjust_',         sOrder: 21, desc: 'Adjust',             comm: fanAdjust,                                    type: 'normal',  secLabel: 'Fans (Low, Medium, High, Off)',  cap: 'capability.switchLevel'],
              // Shades
-             [id: 'shadeAdjust_',       sOrder: 22, desc: 'Adjust',             comm: adjustShade,                             type: 'normal',  secLabel: 'Shades (Up, Down, Stop)',        cap: 'capability.doorControl'],
+             [id: 'shadeAdjust_',       sOrder: 22, desc: 'Adjust',             comm: shadeAdjust,                                  type: 'normal',  secLabel: 'Shades (Up, Down, Stop)',        cap: 'capability.doorControl'],
              // Switches
-             [id: 'offOnReset_',        sOrder: 23, desc: 'Reset->On',          comm: offOnReset,                              type: 'normal',  secLabel: 'Switches (Reset->On)',           cap: 'capability.switch'],
+             [id: 'offOnReset_',        sOrder: 23, desc: 'Reset->On',          comm: switchOffOnReset,                             type: 'normal',  secLabel: 'Switches (Reset->On)',           cap: 'capability.switch'],
 
               // Misc Functions
-             [id: 'mode_',                          desc: 'Set Mode',           comm: changeMode,                              type: 'normal'],
-             [id: 'phrase_',                        desc: 'Run Routine',        comm: runRout,                                 type: 'normal'],
-             [id: 'notifications_',                 desc: 'Push Notification',  comm: messageHandle,       sub: 'notify_',     type: 'bool'],
-             [id: 'phone_',                         desc: 'Send SMS to',        comm: smsHandle,           sub: 'phoneNum_',   type: 'normal'],
-             [id: 'container_',                     desc: 'Cycle Playlist',     comm: cyclePL,                                 type: 'normal'],
+             [id: 'mode_',                          desc: 'Set Mode',           comm: modeSet,                                      type: 'normal'],
+             [id: 'phrase_',                        desc: 'Run Routine',        comm: routineRun,                                   type: 'normal'],
+             [id: 'notifications_',                 desc: 'Push Notification',  comm: notificationHandle,     sub: 'notify_',       type: 'bool'],
+             [id: 'phone_',                         desc: 'Send SMS to',        comm: smsHandle,              sub: 'phoneNum_',     type: 'normal'],
+             [id: 'container_',                     desc: 'Cycle Playlist',     comm: playlistCycle,                                type: 'normal'],
             ]
     return detailMappings
 }
@@ -403,7 +403,7 @@ private colourTempName(value) {
     Fan Functions
 */
 
-def adjustFan(device) {
+def fanAdjust(device) {
     log.debug "Adjusting: $device"
     def currentLevel = device.currentLevel
     if (device.currentSwitch == 'off') device.setLevel(15)
@@ -417,7 +417,7 @@ def adjustFan(device) {
     Shade Functions
 */
 
-def adjustShade(device) {
+def shadeAdjust(device) {
     log.debug "Shades: $device = ${device.currentMotor} state.lastUP = $state.lastshadesUp"
     if (device.currentMotor in ["up", "down"]) {
         state.lastshadesUp = device.currentMotor == "up"
@@ -434,7 +434,7 @@ def adjustShade(device) {
     Speaker Functions
 */
 
-def speakerPlayState(device) {
+def speakerPlayPause(device) {
     log.debug "Toggling Play/Pause: $device"
     if (sonos == true) device.currentValue('playbackStatus').contains('playing') ? device.pause() : device.play()
     else device.currentValue('status').contains('playing') ? device.pause() : device.play()
@@ -450,10 +450,9 @@ def speakerPreviousTrack(device) {
     device.previousTrack()
 }
 
-def speakerVolUp(device, incLevel) {
+def speakerVolumeUp(device, incLevel) {
     log.debug "Incrementing Volume by +$incLevel: $device"
     def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0]
-    //currentLevel return a list...[0] is first item in list ie volume level
     def newVolume = currentVolume.toInteger() + incLevel
     if (newVolume > 100) newVolume = 100
     if (sonos == true) device.setVolume(newVolume)
@@ -461,7 +460,7 @@ def speakerVolUp(device, incLevel) {
     log.debug "Volume increased by $incLevel to $newVolume"
 }
 
-def speakerVolDown(device, decLevel) {
+def speakerVolumeDown(device, decLevel) {
     log.debug "Decrementing Volume by -$decLevel: $device"
     def currentVolume = (sonos == true) ? device.currentValue('volume')[0] : device.currentValue('level')[0]
     def newVolume = currentVolume.toInteger() - decLevel
@@ -476,16 +475,28 @@ def speakerMute(device) {
     device.currentValue('mute').contains('unmuted') ? device.mute() : device.unmute()
 }
 
+/*
+    Siren Functions
+*/
 
+def sirenToggle(devices) {
+    log.debug "Toggling: $devices"
+    if (devices*.currentValue('switch').contains('on')) devices.off()
+    else if (devices*.currentValue('switch').contains('off')) devices.on()
+    else if (devices*.currentValue('alarm').contains('off')) devices.siren()
+    else devices.on()
+}
 
+/*
+    Lock Functions
+*/
 
-
-def lock(devices) {
+def lockLock(devices) {
     log.debug "Locking: $devices"
     devices.lock()
 }
 
-def unlock(devices) {
+def lockUnlock(devices) {
     log.debug "Unlocking: $devices"
     devices.unlock()
 }
@@ -496,15 +507,11 @@ def lockToggle(devices) {
     devices.lock()
 }
 
-def toggle(devices) {
-    log.debug "Toggling: $devices"
-    if (devices*.currentValue('switch').contains('on')) devices.off()
-    else if (devices*.currentValue('switch').contains('off')) devices.on()
-    else if (devices*.currentValue('alarm').contains('off')) devices.siren()
-    else devices.on()
-}
+/*
+    Switch Functions
+*/
 
-def offOnReset(devices) {
+def switchOffOnReset(devices) {
     log.debug "Off/On Reset: $devices"
     if (devices*.currentValue('switch').contains('on')) {
         devices.off()
@@ -516,13 +523,21 @@ def offOnReset(devices) {
     }
 }
 
+/*
+    Misc Functions
+*/
 
-def runRout(rout) {
+def modeSet(mode) {
+    log.debug "Changing Mode to: $mode"
+    if (location.mode != mode && location.modes?.find { it.name == mode }) setLocationMode(mode)
+}
+
+def routineRun(rout) {
     log.debug "Running: $rout"
     location.helloHome.execute(rout)
 }
 
-def messageHandle(msg, inApp) {
+def notificationHandle(msg, inApp) {
     if (inApp == true) {
         log.debug "Push notification sent"
         sendPush(msg)
@@ -534,17 +549,13 @@ def smsHandle(phone, msg) {
     sendSms(phone, msg ?: "No custom text entered on: $app.label")
 }
 
-def changeMode(mode) {
-    log.debug "Changing Mode to: $mode"
-    if (location.mode != mode && location.modes?.find { it.name == mode }) setLocationMode(mode)
-}
-
-def cyclePL(device) {
+def playlistCycle(device) {
     //int currPL = device.currentValue('lastRun')
     // int nextPL = currPL+1
     device.cycleChild()
     //device.on(nextPL)
 }
+
 
 // execution filter methods
 private getAllOk() {
@@ -776,7 +787,7 @@ def getSpecText(currentButton) {
     }
 
     if (state.buttonType.contains("Inovelli")) {
-        switch (state.currentButton) {
+            switch (state.currentButton) {
             case 1: return "NOT OPERATIONAL - DO NOT USE"; break
             case 2: return "2X Tap Upper Paddle = Pushed\n2X Tap Lower Paddle = Held"; break
             case 3: return "3X Tap Upper Paddle = Pushed\n3X Tap Lower Paddle = Held"; break
