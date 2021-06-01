@@ -33,7 +33,7 @@
  *	DO NOT PUBLISH !!!!
  */
 
-def version() { "v1.210601" }
+def version() { "v1.210602" }
 
 definition(
         name: "ABC Child Creator",
@@ -177,6 +177,7 @@ def getButtonSections(buttonNumber) {
             }
         }
     }
+  }
 }
 
 def enableSpec() {
@@ -273,8 +274,8 @@ def getPrefDetails() {
              // Sirens
              [id: 'sirens_',            sOrder: 17, desc: 'Toggle',             comm: sirenToggle,                                  type: 'normal',  secLabel: 'Sirens (Toggle)',                cap: 'capability.alarm'],
              // Locks
-             [id: 'locksLock_',         sOrder: 18, desc: 'Lock',               comm: lockLock`,                                    type: 'normal',  secLabel: 'Locks (Lock)',                   cap: 'capability.lock'],
-             [id: 'locksUnlock_',       sOrder: 19, desc: 'Unlock',             comm: lockUnlock,                                   type: 'normal',  secLabel: 'Locks (Unlock)',                 cap: 'capability.lock'],
+             [id: 'locksLock_',         sOrder: 18, desc: 'Lock',               comm: lock,                                        type: 'normal',  secLabel: 'Locks (Lock)',                   cap: 'capability.lock'],
+             [id: 'locksUnlock_',       sOrder: 19, desc: 'Unlock',             comm: unlock,                                       type: 'normal',  secLabel: 'Locks (Unlock)',                 cap: 'capability.lock'],
              [id: 'locksToggle_',       sOrder: 20, desc: 'Toggle Lock',        comm: lockToggle,                                   type: 'normal',  secLabel: 'Locks (Toggle)',                 cap: 'capability.lock'],
              // Fans
              [id: 'fanAdjust_',         sOrder: 21, desc: 'Adjust',             comm: fanAdjust,                                    type: 'normal',  secLabel: 'Fans (Low, Medium, High, Off)',  cap: 'capability.switchLevel'],
@@ -491,12 +492,12 @@ def sirenToggle(devices) {
     Lock Functions
 */
 
-def lockLock(devices) {
+def lock(devices) {
     log.debug "Locking: $devices"
     devices.lock()
 }
 
-def lockUnlock(devices) {
+def unlock(devices) {
     log.debug "Unlocking: $devices"
     devices.unlock()
 }
@@ -555,7 +556,6 @@ def playlistCycle(device) {
     device.cycleChild()
     //device.on(nextPL)
 }
-
 
 // execution filter methods
 private getAllOk() {
