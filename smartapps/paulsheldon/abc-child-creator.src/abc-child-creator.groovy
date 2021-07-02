@@ -1,6 +1,6 @@
 /*	DO NOT PUBLISH !!!!
 *
-*	Child Creator - Advanced Button Controller
+*  Child Creator - Advanced Button Controller
 *
 *  Author: Paul Sheldon (Original by Stephan Hackett)
 *
@@ -25,9 +25,9 @@
 *	DO NOT PUBLISH !!!!
 */
 
-/*
-Define App
-*/
+/**********************************************************************
+ *  Define App
+ **********************************************************************/
 
 def version() { "v1.210602" }
 
@@ -35,7 +35,7 @@ definition(
         name: "ABC Child Creator",
         namespace: "paulsheldon",
         author: "Paul Sheldon (Original by Stephan Hackett)",
-        description: "SHOULD NOT BE PUBLISHED",
+        description: "DO NOT PUBLISH",
         category: "My Apps",
         parent: "paulsheldon:ABC Manager",
         iconUrl: "https://raw.githubusercontent.com/paulsheldon/SmartThings-PS/master/resources/abc/images/abcNew.png",
@@ -54,22 +54,23 @@ preferences {
     }
 }
 
-/*
-Startup Routines
-*/
+/**********************************************************************
+ *  Setup and Configuration Commands:
+ **********************************************************************/
+
 def installed() {
-    log.debug "Installed with settings: ${settings}"
+    log.debug "${app.label}: Installed with settings: ${settings}"
     initialize()
 }
 
 def updated() {
-    log.debug "Updated with settings: ${settings}"
+    log.debug "${app.label}: Updated with settings: ${settings}"
     unsubscribe()
     initialize()
 }
 
 def initialize() {
-    log.debug "Initialize"
+    log.debug "${app.label}: Initialize"
     app.label == app.name ? app.updateLabel(defaultLabel()) : app.updateLabel(app.label)
     subscribe(buttonDevice, "button", buttonEvent)
     state.lastshadesUp = true
@@ -82,6 +83,7 @@ def initialize() {
 def pageChooseButton() {
     dynamicPage(name: "pageChooseButton", install: true, uninstall: true) {
         section("Step 1: Select Button Device") {
+            icon(title: "Choose an Icon", required=false)
             input "buttonDevice", "capability.button", title: "Button Device", multiple: false, required: true, submitOnChange: true
         }
         if (buttonDevice) {
