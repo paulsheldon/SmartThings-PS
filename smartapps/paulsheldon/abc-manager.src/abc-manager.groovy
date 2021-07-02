@@ -1,25 +1,25 @@
-/*
-*
-*  Child Creator - Advanced Button Controller
-*
-*  Author: Paul Sheldon (Original by Stephan Hackett)
-*
-* 6/20/17 - fixed missing subs for notifications
-* 1/07/18 - split smartApp into Parent/Child (IOS hanging on initial startup) - requires complete uninstall and reinstall of Parent and child SmartApps
-* 1/14/18a - updated version check code
-*
-* == Code now maintained by Paul Sheldon ==
-* 2019-02-05   - added support for Hue Dimmer & color temperature
-* 2019-09-25   - updated volume control, play/pause, next/previous track and mute/unmute for Sonos speakers - code provided by Gabor Szabados
-* 2020-01-02   - added support (beta) for fan control, Inovelli Red Series Switch & Dimmer (inc config button 7)
-* 2020-05-05   - added support WS200 Dimmer & Switch
-* 2021-07-02 - Tidy up code
-*
-*/
+/**
+ *
+ *  Child Creator - Advanced Button Controller
+ *
+ *  Author: Paul Sheldon (Original by Stephan Hackett)
+ *
+ * 6/20/17 - fixed missing subs for notifications
+ * 1/07/18 - split smartApp into Parent/Child (IOS hanging on initial startup) - requires complete uninstall and reinstall of Parent and child SmartApps
+ * 1/14/18a - updated version check code
+ *
+ * Code now maintained by Paul Sheldon *
+ * 2019-02-05   - added support for Hue Dimmer & color temperature
+ * 2019-09-25   - updated volume control, play/pause, next/previous track and mute/unmute for Sonos speakers - code provided by Gabor Szabados
+ * 2020-01-02   - added support (beta) for fan control, Inovelli Red Series Switch & Dimmer (inc config button 7)
+ * 2020-05-05   - added support WS200 Dimmer & Switch
+ * 2021-07-02 - Tidy up code
+ *
+ **/
 
 /**********************************************************************
  *  Define App Parameters
- **********************************************************************/
+ *********************************************************************/
 definition(
         name: "ABC Manager",
         namespace: "paulsheldon",
@@ -39,7 +39,7 @@ preferences {
 
 /**********************************************************************
  *  Setup and Configuration Commands:
- **********************************************************************/
+ *********************************************************************/
 def installed() {
     log.debug "${app.label}: Installed"
 }
@@ -55,7 +55,7 @@ def updated() {
 
 /**********************************************************************
  *  Page Definitions
- **********************************************************************/
+ *********************************************************************/
 def pageMain() {
     dynamicPage(name: "pageMain") {
         def childApps = getAllChildApps()
@@ -155,7 +155,7 @@ def pageAbout() {
 
 /**********************************************************************
  *  Image Check - used to check for new app versions
- **********************************************************************/
+ *********************************************************************/
 def versionCheck(childVersion) {
     log.debug "Looking for Version ${childVersion}"
     def params = [
