@@ -720,6 +720,7 @@ def getButtonType(buttonName) {
 
 def getSpecText(currentButton) {
   currentButton = (currentButton == null ? state.currentButton : currentButton)
+  log.info state.buttonType
   if (state.buttonType == "Lutron Pico") {
     switch (state.currentButton) {
       case 1: return "Top Button"; break
@@ -887,5 +888,5 @@ def getSpecText(currentButton) {
       }
     }
   }
-  return " **Not Configured** "
+  return ""
 }
